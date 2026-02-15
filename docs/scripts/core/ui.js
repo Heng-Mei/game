@@ -110,6 +110,9 @@
 
       config.rows.forEach((rowDef) => {
         const buttons = Array.isArray(rowDef) ? rowDef : rowDef.buttons || [];
+        if (!buttons.length) {
+          return;
+        }
         const rowRole = Array.isArray(rowDef) ? 'actions' : rowDef.role || 'actions';
         const rowEl = document.createElement('div');
         rowEl.className = 'mobile-row';

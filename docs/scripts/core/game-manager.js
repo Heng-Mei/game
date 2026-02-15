@@ -11,6 +11,14 @@
       this.activeGameKey = null;
       this.activeGame = null;
       this.repeatTimer = null;
+      this.lastTapAt = 0;
+      this.mobileControlPolicies = {
+        tetris: 'minimal_dpad',
+        snake: 'minimal_dpad',
+        minesweeper: 'mode_only',
+        dino: 'canvas_only',
+        flappy: 'canvas_only'
+      };
       this.mobileLayouts = {
         tetris: {
           gameKey: 'tetris',
@@ -27,10 +35,7 @@
             {
               role: 'actions',
               buttons: [
-                { action: 'hard_drop', label: '硬降', variant: 'accent', role: 'action' },
-                { action: 'start_or_primary', label: '开始', role: 'action' },
-                { action: 'pause_toggle', label: '暂停', role: 'action' },
-                { action: 'restart', label: '重开', variant: 'warn', role: 'action' }
+                { action: 'hard_drop', label: '硬降', variant: 'accent', role: 'action' }
               ]
             }
           ]
@@ -49,11 +54,7 @@
             },
             {
               role: 'actions',
-              buttons: [
-                { action: 'start_or_primary', label: '开始', role: 'action' },
-                { action: 'pause_toggle', label: '暂停', role: 'action' },
-                { action: 'restart', label: '重开', variant: 'warn', role: 'action' }
-              ]
+              buttons: []
             }
           ]
         },
@@ -109,6 +110,12 @@
 
     renderMobileControls() {
       if (!this.activeGameKey || !this.isMobileViewport()) {
+        ui.setMobileControls(null);
+        return;
+      }
+
+      const policy = this.mobileControlPolicies[this.activeGameKey];
+      if (policy === 'canvas_only') {
         ui.setMobileControls(null);
         return;
       }
@@ -183,6 +190,7 @@
       this.stopRepeatAction();
       this.activeGame = null;
       this.activeGameKey = null;
+      refs.gameView.classList.remove('mobile-game-active');
       refs.menuView.classList.remove('hidden');
       refs.gameView.classList.add('hidden');
       ui.resetPanels();
@@ -202,6 +210,11 @@
       this.activeGameKey = gameKey;
       this.activeGame = item.instance;
       ui.setTitle(item.title);
+      if (this.isMobileViewport()) {
+        refs.gameView.classList.add('mobile-game-active');
+      } else {
+        refs.gameView.classList.remove('mobile-game-active');
+      }
       refs.menuView.classList.add('hidden');
       refs.gameView.classList.remove('hidden');
       this.activeGame.enter();
@@ -234,6 +247,20 @@
         if (!this.activeGame) {
           return;
         }
+        let consumed = false;
+        if (event.pointerType !== 'mouse' && event.button === 0) {
+          const now = Date.now();
+          if (this.activeGameKey === 'minesweeper' && now - this.lastTapAt < 280) {
+            this.dispatchAction('double_tap_restart');
+            consumed = true;
+          } else {
+            this.dispatchAction('primary_tap');
+          }
+          this.lastTapAt = now;
+        }
+        if (consumed) {
+          return;
+        }
         if (typeof this.activeGame.onPointerDown === 'function') {
           this.activeGame.onPointerDown(event);
         }
@@ -260,6 +287,11 @@
 
       window.addEventListener('resize', () => {
         this.stopRepeatAction();
+        if (this.activeGame && this.isMobileViewport()) {
+          refs.gameView.classList.add('mobile-game-active');
+        } else {
+          refs.gameView.classList.remove('mobile-game-active');
+        }
         this.renderMobileControls();
         this.updateOrientationOverlay();
       });

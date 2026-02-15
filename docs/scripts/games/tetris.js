@@ -65,12 +65,10 @@ class TetrisGame {
     this.ui.setCanvasSize(this.COLS * this.BLOCK, this.ROWS * this.BLOCK);
     this.ui.showNextCanvas(true);
     this.ui.setControls([
-      '← / →：左右移动',
-      '↑：旋转',
-      '↓：加速下落',
+      '移动端按钮：左/右/旋转/硬降',
+      '点击画布：开始 / 游戏结束后重开',
       '空格：开始 / 硬降',
-      'P：暂停/继续',
-      'R：重新开始'
+      'P：暂停/继续'
     ]);
     this.renderSettings();
     this.reset();
@@ -334,8 +332,19 @@ class TetrisGame {
       case 'start_or_primary':
         if (!this.gameStarted) {
           this.startGame();
+        } else if (this.gameOver) {
+          this.reset();
+          this.startGame();
         } else if (!this.paused && !this.gameOver && !this.lineClearEffect) {
           this.hardDrop();
+        }
+        return;
+      case 'primary_tap':
+        if (!this.gameStarted) {
+          this.startGame();
+        } else if (this.gameOver) {
+          this.reset();
+          this.startGame();
         }
         return;
       default:

@@ -18,9 +18,8 @@ class FlappyGame {
     this.ui.showNextCanvas(false);
     this.ui.setSettings([]);
     this.ui.setControls([
-      '空格 / ↑ / W：起飞',
-      '鼠标左键点击画布：起飞',
-      'R：重新开始'
+      '点击画布：开始 / 起飞 / 重开',
+      '空格 / ↑ / W：起飞'
     ]);
     this.reset();
   }
@@ -89,6 +88,9 @@ class FlappyGame {
   }
 
   onPointerDown(event) {
+    if (event.pointerType && event.pointerType !== 'mouse') {
+      return;
+    }
     if (event.button !== 0) {
       return;
     }
@@ -101,7 +103,7 @@ class FlappyGame {
       return;
     }
 
-    if (action === 'flap_primary') {
+    if (action === 'flap_primary' || action === 'primary_tap') {
       this.handleFlapAction();
     }
   }

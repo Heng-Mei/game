@@ -22,6 +22,7 @@ body {
   display: grid;
   place-items: center;
   padding: 18px;
+  overflow-y: auto;
 }
 
 button {
@@ -139,6 +140,10 @@ button {
   position: relative;
 }
 
+.game-view.mobile-game-active {
+  width: 100%;
+}
+
 .panel,
 .card {
   border: 1px solid var(--border);
@@ -164,6 +169,8 @@ button {
 
 #mainCanvas {
   touch-action: none;
+  width: auto;
+  max-height: min(72vh, 72dvh);
 }
 
 .state {
@@ -336,13 +343,24 @@ button {
   }
 }
 
-@media (max-width: 1024px) and (orientation: landscape) {
+@media (max-width: 1024px) {
   body {
-    padding: 10px;
+    display: block;
+    padding: 8px;
   }
 
   .app-shell {
     width: 100%;
+  }
+
+  .game-view.mobile-game-active .side {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) and (orientation: landscape) {
+  body {
+    padding: 10px;
   }
 
   .topbar h2 {
@@ -350,16 +368,18 @@ button {
   }
 
   .layout {
-    grid-template-columns: 1fr 250px;
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 
   .panel {
-    padding: 10px;
+    padding: 8px;
   }
 
   #mainCanvas {
-    width: min(100%, 640px);
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100dvh - 180px);
   }
 
   .mobile-controls {
@@ -369,6 +389,7 @@ button {
   .mobile-layout--landscape .mobile-row--actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
@@ -390,5 +411,19 @@ button {
 
   .mobile-layout--portrait.mobile-controls--has-dpad .mobile-row--actions {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .topbar {
+    margin-bottom: 8px;
+  }
+
+  .topbar h2 {
+    font-size: 22px;
+  }
+
+  #mainCanvas {
+    width: auto;
+    max-width: 100%;
+    max-height: calc(100dvh - 230px);
   }
 }

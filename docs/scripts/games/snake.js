@@ -18,7 +18,7 @@ class SnakeGame {
     this.ui.setSettings([]);
     this.ui.setControls([
       '← / → / ↑ / ↓ 或 WASD：移动',
-      '空格：开始 / 死亡后重开',
+      '点击画布：开始 / 死亡后重开',
       'P：暂停/继续',
       'R：重新开始'
     ]);
@@ -163,6 +163,7 @@ class SnakeGame {
         this.togglePause();
         return;
       case 'start_or_primary':
+      case 'primary_tap':
         if (this.gameOver) {
           this.reset();
         }

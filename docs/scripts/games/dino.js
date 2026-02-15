@@ -17,8 +17,8 @@ class DinoGame {
     this.ui.showNextCanvas(false);
     this.ui.setSettings([]);
     this.ui.setControls([
-      '空格 / ↑ / W：跳跃',
-      'R：重新开始'
+      '点击画布：开始 / 跳跃 / 重开',
+      '空格 / ↑ / W：跳跃'
     ]);
     this.reset();
   }
@@ -97,7 +97,7 @@ class DinoGame {
       return;
     }
 
-    if (action === 'jump_primary') {
+    if (action === 'jump_primary' || action === 'primary_tap') {
       if (this.gameOver) {
         this.reset();
       }

@@ -12,6 +12,9 @@ rg -n 'mobile-btn--dpad-up' docs/styles/main.css >/dev/null
 rg -n 'mobile-btn--dpad-down' docs/styles/main.css >/dev/null
 rg -n 'mobile-btn--dpad-left' docs/styles/main.css >/dev/null
 rg -n 'mobile-btn--dpad-right' docs/styles/main.css >/dev/null
+rg -n '\.game-view\.mobile-game-active \.side' docs/styles/main.css >/dev/null
+rg -n 'max-height: calc\(100dvh -' docs/styles/main.css >/dev/null
+rg -n 'overflow-y: auto' docs/styles/main.css >/dev/null
 rg -n 'orientation: landscape' docs/styles/main.css >/dev/null
 rg -n 'orientation: portrait' docs/styles/main.css >/dev/null
 rg -n 'touch-action' docs/styles/main.css >/dev/null

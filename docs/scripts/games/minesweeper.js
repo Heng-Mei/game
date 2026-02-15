@@ -18,9 +18,8 @@ class MinesweeperGame {
     this.ui.showNextCanvas(false);
     this.ui.setSettings([]);
     this.ui.setControls([
-      '鼠标左键：翻开格子',
-      '鼠标右键：插旗/取消旗帜',
-      '移动端：用下方按钮切换翻开/插旗模式',
+      '移动端：按钮切换翻开/插旗，点击画布操作',
+      '双击画布：重新开始',
       'R：重新开始'
     ]);
     this.reset();
@@ -222,7 +221,10 @@ class MinesweeperGame {
   onAction(action) {
     switch (action) {
       case 'restart':
+      case 'double_tap_restart':
         this.reset();
+        break;
+      case 'primary_tap':
         break;
       case 'mode_reveal':
         this.mobileMode = 'reveal';
