@@ -14,7 +14,11 @@
     settingsContainer: document.getElementById('settingsContainer'),
     statusList: document.getElementById('statusList'),
     controlsList: document.getElementById('controlsList'),
-    stateText: document.getElementById('stateText')
+    stateText: document.getElementById('stateText'),
+    mobileControls: document.getElementById('mobileControls'),
+    orientationOverlay: document.getElementById('orientationOverlay'),
+    orientationMessage: document.getElementById('orientationMessage'),
+    continuePortraitBtn: document.getElementById('continuePortraitBtn')
   };
 
   refs.mainCtx = refs.mainCanvas.getContext('2d');
@@ -80,12 +84,58 @@
       });
     },
 
+    setMobileControls(config) {
+      refs.mobileControls.innerHTML = '';
+
+      if (!config || !Array.isArray(config.rows) || config.rows.length === 0) {
+        refs.mobileControls.className = 'mobile-controls hidden';
+        return;
+      }
+
+      refs.mobileControls.className = 'mobile-controls';
+      if (config.gameKey) {
+        refs.mobileControls.classList.add(`mobile-controls--${config.gameKey}`);
+      }
+
+      config.rows.forEach((row) => {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'mobile-row';
+
+        row.forEach((def) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'mobile-btn';
+          if (def.variant === 'warn') {
+            btn.classList.add('mobile-btn--warn');
+          }
+          if (def.variant === 'accent') {
+            btn.classList.add('mobile-btn--accent');
+          }
+          btn.textContent = def.label;
+          btn.setAttribute('data-action', def.action);
+          btn.setAttribute('data-repeat', def.repeat ? '1' : '0');
+          rowEl.appendChild(btn);
+        });
+
+        refs.mobileControls.appendChild(rowEl);
+      });
+    },
+
+    setOrientationOverlay(visible, message) {
+      refs.orientationOverlay.classList.toggle('hidden', !visible);
+      if (message) {
+        refs.orientationMessage.textContent = message;
+      }
+    },
+
     resetPanels() {
       this.showNextCanvas(false);
       this.setSettings([]);
       this.setStatus([]);
       this.setControls([]);
       this.setState('准备开始');
+      this.setMobileControls(null);
+      this.setOrientationOverlay(false);
     }
   };
 

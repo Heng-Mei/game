@@ -70,22 +70,40 @@ class FlappyGame {
   }
 
   onKeyDown(event) {
-    if (event.code === 'KeyR') {
-      this.reset();
+    const keyMap = {
+      KeyR: 'restart',
+      Space: 'flap_primary',
+      ArrowUp: 'flap_primary',
+      KeyW: 'flap_primary'
+    };
+    const action = keyMap[event.code];
+    if (!action) {
       return;
     }
 
-    if (event.code === 'Space' || event.code === 'ArrowUp' || event.code === 'KeyW') {
+    if (event.code === 'Space' || event.code === 'ArrowUp') {
       event.preventDefault();
-      this.handleFlapAction();
     }
+
+    this.onAction(action);
   }
 
   onPointerDown(event) {
     if (event.button !== 0) {
       return;
     }
-    this.handleFlapAction();
+    this.onAction('flap_primary');
+  }
+
+  onAction(action) {
+    if (action === 'restart') {
+      this.reset();
+      return;
+    }
+
+    if (action === 'flap_primary') {
+      this.handleFlapAction();
+    }
   }
 
   handleFlapAction() {

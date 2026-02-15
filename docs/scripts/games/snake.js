@@ -128,50 +128,60 @@ class SnakeGame {
   }
 
   onKeyDown(event) {
-    if (event.code === 'KeyR') {
-      this.reset();
+    const keyMap = {
+      KeyR: 'restart',
+      KeyP: 'pause_toggle',
+      Space: 'start_or_primary',
+      ArrowUp: 'move_up',
+      KeyW: 'move_up',
+      ArrowDown: 'move_down',
+      KeyS: 'move_down',
+      ArrowLeft: 'move_left',
+      KeyA: 'move_left',
+      ArrowRight: 'move_right',
+      KeyD: 'move_right'
+    };
+
+    const action = keyMap[event.code];
+    if (!action) {
       return;
     }
 
-    if (event.code === 'KeyP') {
-      this.togglePause();
-      return;
-    }
-
-    if (event.code === 'Space') {
+    if (event.code === 'Space' || event.code.startsWith('Arrow')) {
       event.preventDefault();
-      if (this.gameOver) {
-        this.reset();
-        this.start();
-      } else {
-        this.start();
-      }
-      return;
     }
 
-    switch (event.code) {
-      case 'ArrowUp':
-      case 'KeyW':
-        event.preventDefault();
+    this.onAction(action);
+  }
+
+  onAction(action) {
+    switch (action) {
+      case 'restart':
+        this.reset();
+        return;
+      case 'pause_toggle':
+        this.togglePause();
+        return;
+      case 'start_or_primary':
+        if (this.gameOver) {
+          this.reset();
+        }
+        this.start();
+        return;
+      case 'move_up':
         this.setDirection(0, -1);
-        break;
-      case 'ArrowDown':
-      case 'KeyS':
-        event.preventDefault();
+        return;
+      case 'move_down':
         this.setDirection(0, 1);
-        break;
-      case 'ArrowLeft':
-      case 'KeyA':
-        event.preventDefault();
+        return;
+      case 'move_left':
         this.setDirection(-1, 0);
-        break;
-      case 'ArrowRight':
-      case 'KeyD':
-        event.preventDefault();
+        return;
+      case 'move_right':
         this.setDirection(1, 0);
-        break;
+        return;
       default:
-        break;
+        return;
     }
   }
 

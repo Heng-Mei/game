@@ -20,6 +20,7 @@ class MinesweeperGame {
     this.ui.setControls([
       '鼠标左键：翻开格子',
       '鼠标右键：插旗/取消旗帜',
+      '移动端：用下方按钮切换翻开/插旗模式',
       'R：重新开始'
     ]);
     this.reset();
@@ -41,6 +42,7 @@ class MinesweeperGame {
     this.won = false;
     this.flags = 0;
     this.elapsed = 0;
+    this.mobileMode = 'reveal';
     this.updateHUD();
     this.ui.setState('左键翻开，右键插旗');
     this.draw();
@@ -171,7 +173,9 @@ class MinesweeperGame {
 
     const cell = this.board[y][x];
 
-    if (event.button === 2) {
+    const useFlagAction = event.button === 2 || (event.button === 0 && this.mobileMode === 'flag');
+
+    if (useFlagAction) {
       if (cell.revealed) {
         return;
       }
@@ -211,7 +215,29 @@ class MinesweeperGame {
 
   onKeyDown(event) {
     if (event.code === 'KeyR') {
-      this.reset();
+      this.onAction('restart');
+    }
+  }
+
+  onAction(action) {
+    switch (action) {
+      case 'restart':
+        this.reset();
+        break;
+      case 'mode_reveal':
+        this.mobileMode = 'reveal';
+        if (!this.ended) {
+          this.ui.setState('当前模式：翻开');
+        }
+        break;
+      case 'mode_flag':
+        this.mobileMode = 'flag';
+        if (!this.ended) {
+          this.ui.setState('当前模式：插旗');
+        }
+        break;
+      default:
+        break;
     }
   }
 

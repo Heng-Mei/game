@@ -73,18 +73,33 @@ class DinoGame {
   }
 
   onKeyDown(event) {
-    if (event.code === 'KeyR') {
+    const keyMap = {
+      KeyR: 'restart',
+      Space: 'jump_primary',
+      ArrowUp: 'jump_primary',
+      KeyW: 'jump_primary'
+    };
+    const action = keyMap[event.code];
+    if (!action) {
+      return;
+    }
+
+    if (event.code === 'Space' || event.code === 'ArrowUp') {
+      event.preventDefault();
+    }
+
+    this.onAction(action);
+  }
+
+  onAction(action) {
+    if (action === 'restart') {
       this.reset();
       return;
     }
 
-    if (event.code === 'Space' || event.code === 'ArrowUp' || event.code === 'KeyW') {
-      event.preventDefault();
+    if (action === 'jump_primary') {
       if (this.gameOver) {
         this.reset();
-        this.start();
-        this.jump();
-        return;
       }
       this.start();
       this.jump();

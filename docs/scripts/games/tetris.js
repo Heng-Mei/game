@@ -323,51 +323,71 @@ class TetrisGame {
     this.ui.setState(this.paused ? '已暂停（按 P 继续）' : '进行中');
   }
 
-  onKeyDown(event) {
-    if (event.code === 'KeyR') {
-      this.reset();
-      return;
-    }
-
-    if (event.code === 'Space') {
-      event.preventDefault();
-      if (!this.gameStarted) {
-        this.startGame();
-      } else if (!this.paused && !this.gameOver && !this.lineClearEffect) {
-        this.hardDrop();
-      }
-      return;
-    }
-
-    if (event.code === 'KeyP') {
-      this.togglePause();
-      return;
+  onAction(action) {
+    switch (action) {
+      case 'restart':
+        this.reset();
+        return;
+      case 'pause_toggle':
+        this.togglePause();
+        return;
+      case 'start_or_primary':
+        if (!this.gameStarted) {
+          this.startGame();
+        } else if (!this.paused && !this.gameOver && !this.lineClearEffect) {
+          this.hardDrop();
+        }
+        return;
+      default:
+        break;
     }
 
     if (!this.gameStarted || this.paused || this.gameOver || this.lineClearEffect) {
       return;
     }
 
-    switch (event.code) {
-      case 'ArrowLeft':
-        event.preventDefault();
+    switch (action) {
+      case 'move_left':
         this.movePiece(-1);
         break;
-      case 'ArrowRight':
-        event.preventDefault();
+      case 'move_right':
         this.movePiece(1);
         break;
-      case 'ArrowDown':
-        event.preventDefault();
+      case 'soft_drop':
         this.softDrop();
         break;
-      case 'ArrowUp':
-        event.preventDefault();
+      case 'rotate':
         this.rotatePiece();
+        break;
+      case 'hard_drop':
+        this.hardDrop();
         break;
       default:
         break;
     }
+  }
+
+  onKeyDown(event) {
+    const keyMap = {
+      KeyR: 'restart',
+      Space: 'start_or_primary',
+      KeyP: 'pause_toggle',
+      ArrowLeft: 'move_left',
+      ArrowRight: 'move_right',
+      ArrowDown: 'soft_drop',
+      ArrowUp: 'rotate'
+    };
+
+    const action = keyMap[event.code];
+    if (!action) {
+      return;
+    }
+
+    if (event.code === 'Space' || event.code.startsWith('Arrow')) {
+      event.preventDefault();
+    }
+
+    this.onAction(action);
   }
 
   hexToRgba(hex, alpha) {
