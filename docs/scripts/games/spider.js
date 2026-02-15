@@ -60,6 +60,7 @@
       this.ui.showNextCanvas(false);
       this.updateSettings();
       this.ui.setControls([
+        '花色显示：♠ ♥ ♦ ♣',
         '点击同花连续下降序列进行移动',
         '目标列顶部牌点数需比移动序列首牌大 1',
         '空列可放任意序列；每次操作 -1 分',
@@ -512,6 +513,11 @@
       return suit === 'H' || suit === 'D' ? '#cf3149' : '#202531';
     }
 
+    suitSymbol(suit) {
+      const key = String(suit || '').trim().toUpperCase();
+      return SUIT_SYMBOLS[key] || '♠';
+    }
+
     drawCard(card, x, y, selected) {
       if (!card.faceUp) {
         mainCtx.fillStyle = '#2d4874';
@@ -528,7 +534,7 @@
       mainCtx.strokeRect(x + 0.5, y + 0.5, this.cardWidth - 1, this.cardHeight - 1);
       mainCtx.lineWidth = 1;
 
-      const suitSymbol = SUIT_SYMBOLS[card.suit] || card.suit;
+      const suitSymbol = this.suitSymbol(card.suit);
       mainCtx.fillStyle = this.suitColor(card.suit);
       mainCtx.font = 'bold 18px sans-serif';
       mainCtx.textAlign = 'left';
