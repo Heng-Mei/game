@@ -4,17 +4,17 @@
 
 ```text
 .
-├─ public/
+├─ docs/
 │  ├─ index.html
 │  ├─ assets/icons/
 │  ├─ styles/main.css
-│  └─ scripts/
-│     ├─ app.js
-│     ├─ core/
-│     └─ games/
+│  ├─ scripts/
+│  │  ├─ app.js
+│  │  ├─ core/
+│  │  └─ games/
+│  └─ plans/
 ├─ scripts/run.sh
 ├─ run.sh
-├─ docs/plans/
 └─ tests/
 ```
 
@@ -40,4 +40,5 @@ http://localhost:8080
 ## 说明
 - 进入页面先显示游戏菜单
 - 所有游戏均支持返回菜单
+- GitHub Pages 发布根目录为 `docs/`
 - 启动仍基于 Python `http.server`，未引入 npm 依赖

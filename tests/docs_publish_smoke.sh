@@ -15,7 +15,6 @@ required=(
   "docs/scripts/games/flappy.js"
   "docs/assets/icons/favicon.svg"
   "docs/assets/icons/favicon.ico"
-  "scripts/run.sh"
 )
 
 for file in "${required[@]}"; do
@@ -24,5 +23,11 @@ for file in "${required[@]}"; do
     exit 1
   fi
 done
+
+if rg -n '(href|src)="/' docs/index.html >/dev/null; then
+  echo "FAIL: found root-absolute asset paths in docs/index.html"
+  rg -n '(href|src)="/' docs/index.html
+  exit 1
+fi
 
 echo "OK"

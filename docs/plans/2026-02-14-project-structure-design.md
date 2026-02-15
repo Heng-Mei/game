@@ -10,11 +10,11 @@
 - 不引入构建工具与包管理依赖
 
 ## 方案对比
-1. `public-only` 分层（采用）
+1. `docs-only` 分层（采用）
 - 优点：简单、可部署、低迁移成本
 - 缺点：无源码/产物分离
 
-2. `src + public` 双层
+2. `src + docs` 双层
 - 优点：开发与发布分离更清晰
 - 缺点：需要同步脚本，流程变复杂
 
@@ -23,11 +23,11 @@
 - 缺点：对当前项目过重
 
 ## 采用方案
-采用 `public-only` 分层：
+采用 `docs-only` 分层：
 
 ```text
 game/
-├─ public/
+├─ docs/
 │  ├─ index.html
 │  ├─ assets/icons/favicon.svg|ico
 │  ├─ styles/main.css
@@ -42,10 +42,10 @@ game/
 ```
 
 ## 迁移映射
-- `index.html` -> `public/index.html`
-- `style.css` -> `public/styles/main.css`
-- `game.js` -> 多模块拆分到 `public/scripts/**`
-- `favicon.svg|ico` -> `public/assets/icons/`
+- `index.html` -> `docs/index.html`
+- `style.css` -> `docs/styles/main.css`
+- `game.js` -> 多模块拆分到 `docs/scripts/**`
+- `favicon.svg|ico` -> `docs/assets/icons/`
 - `run.sh` -> 保留兼容入口，转调 `scripts/run.sh`
 
 ## 风险与控制
@@ -54,7 +54,6 @@ game/
 - 行为回归：按游戏逐项手工验证（菜单切换、输入、返回菜单）
 
 ## 验证清单
-- `node --check public/scripts/**/*.js`
+- `node --check docs/scripts/**/*.js`
 - `./run.sh` 后 `curl -I http://localhost:8080` 返回 `200`
 - `favicon/css/js` 关键资源返回 `200`
-
