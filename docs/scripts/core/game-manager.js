@@ -12,6 +12,8 @@
       this.activeGame = null;
       this.repeatTimer = null;
       this.lastTapAt = 0;
+      this.infoDrawerStorageKey = 'gamehub.info_drawer_open';
+      this.infoDrawerOpen = this.loadInfoDrawerState();
       this.mobileControlPolicies = {
         tetris: 'minimal_dpad',
         snake: 'minimal_dpad',
@@ -99,6 +101,22 @@
       this.bindEvents();
     }
 
+    loadInfoDrawerState() {
+      try {
+        return window.localStorage.getItem(this.infoDrawerStorageKey) === '1';
+      } catch (error) {
+        return false;
+      }
+    }
+
+    saveInfoDrawerState() {
+      try {
+        window.localStorage.setItem(this.infoDrawerStorageKey, this.infoDrawerOpen ? '1' : '0');
+      } catch (error) {
+        // Ignore storage failures.
+      }
+    }
+
     isMobileViewport() {
       return window.matchMedia('(max-width: 1024px)').matches
         && window.matchMedia('(pointer: coarse)').matches;
@@ -134,6 +152,21 @@
 
     updateOrientationOverlay() {
       ui.setOrientationOverlay(false);
+    }
+
+    syncMobileAuxPanels() {
+      const mobileGame = Boolean(this.activeGame && this.isMobileViewport());
+      refs.gameView.classList.toggle('mobile-game-active', mobileGame);
+      refs.gameView.classList.toggle('info-drawer-open', mobileGame && this.infoDrawerOpen);
+
+      ui.setInfoDrawer(mobileGame, mobileGame && this.infoDrawerOpen);
+      ui.setFloatingNext(mobileGame && this.activeGameKey === 'tetris');
+    }
+
+    setInfoDrawerOpen(nextOpen) {
+      this.infoDrawerOpen = Boolean(nextOpen);
+      this.saveInfoDrawerState();
+      this.syncMobileAuxPanels();
     }
 
     dispatchAction(action, payload) {
@@ -191,6 +224,7 @@
       this.activeGame = null;
       this.activeGameKey = null;
       refs.gameView.classList.remove('mobile-game-active');
+      refs.gameView.classList.remove('info-drawer-open');
       refs.menuView.classList.remove('hidden');
       refs.gameView.classList.add('hidden');
       ui.resetPanels();
@@ -210,15 +244,11 @@
       this.activeGameKey = gameKey;
       this.activeGame = item.instance;
       ui.setTitle(item.title);
-      if (this.isMobileViewport()) {
-        refs.gameView.classList.add('mobile-game-active');
-      } else {
-        refs.gameView.classList.remove('mobile-game-active');
-      }
       refs.menuView.classList.add('hidden');
       refs.gameView.classList.remove('hidden');
       this.activeGame.enter();
       this.renderMobileControls();
+      this.syncMobileAuxPanels();
       this.updateOrientationOverlay();
     }
 
@@ -232,6 +262,10 @@
 
       refs.backToMenuBtn.addEventListener('click', () => {
         this.openMenu();
+      });
+
+      refs.infoToggleBtn.addEventListener('click', () => {
+        this.setInfoDrawerOpen(!this.infoDrawerOpen);
       });
 
       document.addEventListener('keydown', (event) => {
@@ -287,17 +321,14 @@
 
       window.addEventListener('resize', () => {
         this.stopRepeatAction();
-        if (this.activeGame && this.isMobileViewport()) {
-          refs.gameView.classList.add('mobile-game-active');
-        } else {
-          refs.gameView.classList.remove('mobile-game-active');
-        }
         this.renderMobileControls();
+        this.syncMobileAuxPanels();
         this.updateOrientationOverlay();
       });
       window.addEventListener('orientationchange', () => {
         this.stopRepeatAction();
         this.renderMobileControls();
+        this.syncMobileAuxPanels();
         this.updateOrientationOverlay();
       });
       window.addEventListener('blur', () => {

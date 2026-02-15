@@ -43,6 +43,7 @@
         <div class="topbar">
           <button id="backToMenu" class="back-btn" type="button">返回菜单</button>
           <h2 id="gameTitle">游戏</h2>
+          <button id="infoToggleBtn" class="back-btn info-toggle-btn hidden" type="button" aria-expanded="false">信息</button>
         </div>
 
         <div class="layout">
@@ -51,7 +52,7 @@
             <p id="stateText" class="state">准备开始</p>
           </section>
 
-          <aside class="side">
+          <aside id="sidePanel" class="side">
             <div class="card">
               <h3>状态</h3>
               <div id="statusList" class="status-list"></div>
@@ -75,6 +76,10 @@
         </div>
 
         <section id="mobileControls" class="mobile-controls hidden" aria-label="移动端操作"></section>
+
+        <section id="infoDrawer" class="info-drawer hidden" aria-label="移动端信息抽屉">
+          <div id="infoDrawerContent" class="info-drawer-content"></div>
+        </section>
 
         <div id="orientationOverlay" class="orientation-overlay hidden" role="status" aria-live="polite">
           <div class="orientation-card">

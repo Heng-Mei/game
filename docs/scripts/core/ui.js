@@ -7,6 +7,9 @@
     gameTitle: document.getElementById('gameTitle'),
     backToMenuBtn: document.getElementById('backToMenu'),
     menuButtons: document.querySelectorAll('.menu-btn'),
+    layout: document.querySelector('.layout'),
+    panel: document.querySelector('.panel'),
+    sidePanel: document.getElementById('sidePanel'),
     mainCanvas: document.getElementById('mainCanvas'),
     nextCard: document.getElementById('nextCard'),
     nextCanvas: document.getElementById('nextCanvas'),
@@ -16,6 +19,9 @@
     controlsList: document.getElementById('controlsList'),
     stateText: document.getElementById('stateText'),
     mobileControls: document.getElementById('mobileControls'),
+    infoDrawer: document.getElementById('infoDrawer'),
+    infoDrawerContent: document.getElementById('infoDrawerContent'),
+    infoToggleBtn: document.getElementById('infoToggleBtn'),
     orientationOverlay: document.getElementById('orientationOverlay'),
     orientationMessage: document.getElementById('orientationMessage'),
     continuePortraitBtn: document.getElementById('continuePortraitBtn')
@@ -150,6 +156,33 @@
       }
     },
 
+    setInfoDrawer(showButton, open) {
+      refs.infoToggleBtn.classList.toggle('hidden', !showButton);
+      refs.infoToggleBtn.setAttribute('aria-expanded', String(Boolean(open)));
+
+      if (showButton && open) {
+        if (refs.sidePanel.parentElement !== refs.infoDrawerContent) {
+          refs.infoDrawerContent.appendChild(refs.sidePanel);
+        }
+      } else if (refs.sidePanel.parentElement !== refs.layout) {
+        refs.layout.appendChild(refs.sidePanel);
+      }
+
+      refs.infoDrawer.classList.toggle('hidden', !showButton || !open);
+      refs.infoDrawer.classList.toggle('info-drawer--open', showButton && open);
+    },
+
+    setFloatingNext(visible) {
+      if (visible) {
+        if (refs.nextCard.parentElement !== refs.panel) {
+          refs.panel.appendChild(refs.nextCard);
+        }
+      } else if (refs.nextCard.parentElement !== refs.sidePanel) {
+        refs.sidePanel.insertBefore(refs.nextCard, refs.settingsCard);
+      }
+      refs.nextCard.classList.toggle('floating-next', visible);
+    },
+
     resetPanels() {
       this.showNextCanvas(false);
       this.setSettings([]);
@@ -157,6 +190,8 @@
       this.setControls([]);
       this.setState('准备开始');
       this.setMobileControls(null);
+      this.setInfoDrawer(false, false);
+      this.setFloatingNext(false);
       this.setOrientationOverlay(false);
     }
   };

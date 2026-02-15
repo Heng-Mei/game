@@ -156,6 +156,7 @@ button {
   display: grid;
   gap: 10px;
   justify-items: center;
+  position: relative;
 }
 
 #mainCanvas,
@@ -209,6 +210,38 @@ button {
   display: none;
   gap: 10px;
   margin-top: 14px;
+}
+
+.info-toggle-btn {
+  margin-left: auto;
+}
+
+.info-drawer {
+  display: none;
+}
+
+.info-drawer-content {
+  width: 100%;
+}
+
+.floating-next {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 120px;
+  z-index: 6;
+  backdrop-filter: blur(4px);
+  background: rgba(26, 32, 48, 0.92);
+}
+
+.floating-next h3 {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.floating-next #nextCanvas {
+  width: 100%;
+  height: auto;
 }
 
 .mobile-row {
@@ -353,8 +386,40 @@ button {
     width: 100%;
   }
 
-  .game-view.mobile-game-active .side {
+  .game-view.mobile-game-active .layout > .side {
     display: none;
+  }
+
+  .game-view.mobile-game-active .info-toggle-btn {
+    display: inline-flex !important;
+    align-items: center;
+  }
+
+  .info-drawer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 42dvh;
+    background: rgba(15, 19, 32, 0.96);
+    border-top: 1px solid var(--border);
+    z-index: 15;
+    overflow: hidden;
+  }
+
+  .info-drawer--open {
+    display: block;
+  }
+
+  .info-drawer-content {
+    max-height: 42dvh;
+    overflow-y: auto;
+    padding: 10px;
+  }
+
+  .info-drawer .side {
+    display: grid;
+    gap: 10px;
   }
 }
 
@@ -379,7 +444,7 @@ button {
   #mainCanvas {
     width: auto;
     max-width: 100%;
-    max-height: calc(100dvh - 180px);
+    max-height: calc(100dvh - 190px);
   }
 
   .mobile-controls {
@@ -388,6 +453,10 @@ button {
 
   .mobile-layout--landscape .mobile-row--actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .game-view.mobile-game-active.info-drawer-open #mainCanvas {
+    max-height: calc(100dvh - 320px);
   }
 
 }
@@ -424,6 +493,10 @@ button {
   #mainCanvas {
     width: auto;
     max-width: 100%;
-    max-height: calc(100dvh - 230px);
+    max-height: calc(100dvh - 245px);
+  }
+
+  .game-view.mobile-game-active.info-drawer-open #mainCanvas {
+    max-height: calc(100dvh - 390px);
   }
 }

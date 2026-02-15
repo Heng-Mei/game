@@ -3,8 +3,12 @@ set -euo pipefail
 
 rg -n 'dispatchAction\(' docs/scripts/core/game-manager.js >/dev/null
 rg -n 'setMobileControls\(' docs/scripts/core/ui.js >/dev/null
+rg -n 'setInfoDrawer\(' docs/scripts/core/ui.js >/dev/null
+rg -n 'setFloatingNext\(' docs/scripts/core/ui.js >/dev/null
 rg -n 'setOrientationOverlay\(' docs/scripts/core/ui.js >/dev/null
 rg -n 'mobileControlPolicies' docs/scripts/core/game-manager.js >/dev/null
+rg -n 'infoDrawerOpen' docs/scripts/core/game-manager.js >/dev/null
+rg -n 'loadInfoDrawerState' docs/scripts/core/game-manager.js >/dev/null
 rg -n "dino: 'canvas_only'" docs/scripts/core/game-manager.js >/dev/null
 rg -n "flappy: 'canvas_only'" docs/scripts/core/game-manager.js >/dev/null
 rg -n 'primary_tap' docs/scripts/games/flappy.js >/dev/null
