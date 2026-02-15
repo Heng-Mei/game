@@ -20,6 +20,12 @@
   };
 
   const DIFFICULTY_ORDER = ['one', 'two', 'four'];
+  const SUIT_SYMBOLS = {
+    S: '♠',
+    H: '♥',
+    D: '♦',
+    C: '♣'
+  };
   const RANK_LABELS = {
     1: 'A',
     2: '2',
@@ -522,17 +528,18 @@
       mainCtx.strokeRect(x + 0.5, y + 0.5, this.cardWidth - 1, this.cardHeight - 1);
       mainCtx.lineWidth = 1;
 
+      const suitSymbol = SUIT_SYMBOLS[card.suit] || card.suit;
       mainCtx.fillStyle = this.suitColor(card.suit);
       mainCtx.font = 'bold 18px sans-serif';
       mainCtx.textAlign = 'left';
       mainCtx.textBaseline = 'top';
       mainCtx.fillText(RANK_LABELS[card.rank], x + 8, y + 6);
-      mainCtx.font = 'bold 15px sans-serif';
-      mainCtx.fillText(card.suit, x + 8, y + 28);
+      mainCtx.font = "bold 16px 'Segoe UI Symbol', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif";
+      mainCtx.fillText(suitSymbol, x + 8, y + 28);
 
       mainCtx.textAlign = 'right';
       mainCtx.textBaseline = 'bottom';
-      mainCtx.fillText(RANK_LABELS[card.rank], x + this.cardWidth - 8, y + this.cardHeight - 6);
+      mainCtx.fillText(`${RANK_LABELS[card.rank]}${suitSymbol}`, x + this.cardWidth - 8, y + this.cardHeight - 6);
     }
 
     drawCompletedSlots() {
