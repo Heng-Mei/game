@@ -96,15 +96,34 @@
       if (config.gameKey) {
         refs.mobileControls.classList.add(`mobile-controls--${config.gameKey}`);
       }
+      refs.mobileControls.classList.add(
+        config.layout === 'landscape' ? 'mobile-layout--landscape' : 'mobile-layout--portrait'
+      );
 
-      config.rows.forEach((row) => {
+      const hasDpad = config.rows.some((row) => {
+        if (Array.isArray(row)) {
+          return row.some((btn) => btn.pos);
+        }
+        return row && row.role === 'dpad';
+      });
+      refs.mobileControls.classList.add(hasDpad ? 'mobile-controls--has-dpad' : 'mobile-controls--actions-only');
+
+      config.rows.forEach((rowDef) => {
+        const buttons = Array.isArray(rowDef) ? rowDef : rowDef.buttons || [];
+        const rowRole = Array.isArray(rowDef) ? 'actions' : rowDef.role || 'actions';
         const rowEl = document.createElement('div');
         rowEl.className = 'mobile-row';
+        rowEl.classList.add(`mobile-row--${rowRole}`);
 
-        row.forEach((def) => {
+        buttons.forEach((def) => {
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'mobile-btn';
+          if (def.pos) {
+            btn.classList.add(`mobile-btn--dpad-${def.pos}`);
+          } else {
+            btn.classList.add('mobile-btn--action');
+          }
           if (def.variant === 'warn') {
             btn.classList.add('mobile-btn--warn');
           }

@@ -206,8 +206,18 @@ button {
 
 .mobile-row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
+}
+
+.mobile-row--actions {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mobile-row--dpad {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas:
+    ". up ."
+    "left down right";
 }
 
 .mobile-btn {
@@ -215,11 +225,31 @@ button {
   border-radius: 12px;
   background: #172033;
   color: var(--text);
-  min-height: 46px;
+  min-height: 52px;
   font-size: 16px;
   font-weight: 700;
   touch-action: manipulation;
   user-select: none;
+}
+
+.mobile-btn--action {
+  min-height: 48px;
+}
+
+.mobile-btn--dpad-up {
+  grid-area: up;
+}
+
+.mobile-btn--dpad-down {
+  grid-area: down;
+}
+
+.mobile-btn--dpad-left {
+  grid-area: left;
+}
+
+.mobile-btn--dpad-right {
+  grid-area: right;
 }
 
 .mobile-btn:active {
@@ -234,6 +264,32 @@ button {
 .mobile-btn--accent {
   color: #d9f2ff;
   border-color: #5170a8;
+}
+
+.mobile-layout--portrait {
+  grid-template-columns: 1fr;
+}
+
+.mobile-layout--landscape {
+  grid-template-columns: minmax(190px, 240px) 1fr;
+  align-items: start;
+}
+
+.mobile-layout--landscape .mobile-row--dpad {
+  grid-column: 1;
+}
+
+.mobile-layout--landscape .mobile-row--actions {
+  grid-column: 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mobile-controls--actions-only.mobile-layout--landscape {
+  grid-template-columns: 1fr;
+}
+
+.mobile-controls--actions-only.mobile-layout--landscape .mobile-row--actions {
+  grid-column: 1;
 }
 
 .orientation-overlay {
@@ -309,6 +365,10 @@ button {
   .mobile-controls {
     display: grid;
   }
+
+  .mobile-layout--landscape .mobile-row--actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
@@ -322,5 +382,13 @@ button {
 
   .mobile-controls {
     display: grid;
+  }
+
+  .mobile-layout--portrait .mobile-row--actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mobile-layout--portrait.mobile-controls--has-dpad .mobile-row--actions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }

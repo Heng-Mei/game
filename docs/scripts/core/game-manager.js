@@ -10,68 +10,88 @@
       this.games = games;
       this.activeGameKey = null;
       this.activeGame = null;
-      this.allowPortraitPlay = false;
       this.repeatTimer = null;
       this.mobileLayouts = {
         tetris: {
           gameKey: 'tetris',
           rows: [
-            [
-              { action: 'move_left', label: '左', repeat: true },
-              { action: 'rotate', label: '旋转' },
-              { action: 'move_right', label: '右', repeat: true },
-              { action: 'hard_drop', label: '硬降', variant: 'accent' }
-            ],
-            [
-              { action: 'soft_drop', label: '下落', repeat: true, variant: 'accent' },
-              { action: 'start_or_primary', label: '开始/确认' },
-              { action: 'pause_toggle', label: '暂停' },
-              { action: 'restart', label: '重开', variant: 'warn' }
-            ]
+            {
+              role: 'dpad',
+              buttons: [
+                { action: 'rotate', label: '旋', pos: 'up' },
+                { action: 'move_left', label: '左', repeat: true, pos: 'left' },
+                { action: 'soft_drop', label: '下', repeat: true, pos: 'down' },
+                { action: 'move_right', label: '右', repeat: true, pos: 'right' }
+              ]
+            },
+            {
+              role: 'actions',
+              buttons: [
+                { action: 'hard_drop', label: '硬降', variant: 'accent', role: 'action' },
+                { action: 'start_or_primary', label: '开始', role: 'action' },
+                { action: 'pause_toggle', label: '暂停', role: 'action' },
+                { action: 'restart', label: '重开', variant: 'warn', role: 'action' }
+              ]
+            }
           ]
         },
         snake: {
           gameKey: 'snake',
           rows: [
-            [
-              { action: 'move_left', label: '左', repeat: true },
-              { action: 'move_up', label: '上', repeat: true },
-              { action: 'move_right', label: '右', repeat: true },
-              { action: 'start_or_primary', label: '开始/确认' }
-            ],
-            [
-              { action: 'move_down', label: '下', repeat: true },
-              { action: 'pause_toggle', label: '暂停' },
-              { action: 'restart', label: '重开', variant: 'warn' }
-            ]
+            {
+              role: 'dpad',
+              buttons: [
+                { action: 'move_up', label: '上', repeat: true, pos: 'up' },
+                { action: 'move_left', label: '左', repeat: true, pos: 'left' },
+                { action: 'move_down', label: '下', repeat: true, pos: 'down' },
+                { action: 'move_right', label: '右', repeat: true, pos: 'right' }
+              ]
+            },
+            {
+              role: 'actions',
+              buttons: [
+                { action: 'start_or_primary', label: '开始', role: 'action' },
+                { action: 'pause_toggle', label: '暂停', role: 'action' },
+                { action: 'restart', label: '重开', variant: 'warn', role: 'action' }
+              ]
+            }
           ]
         },
         minesweeper: {
           gameKey: 'minesweeper',
           rows: [
-            [
-              { action: 'mode_reveal', label: '翻开' },
-              { action: 'mode_flag', label: '插旗', variant: 'accent' },
-              { action: 'restart', label: '重开', variant: 'warn' }
-            ]
+            {
+              role: 'actions',
+              buttons: [
+                { action: 'mode_reveal', label: '翻开', role: 'action' },
+                { action: 'mode_flag', label: '插旗', variant: 'accent', role: 'action' },
+                { action: 'restart', label: '重开', variant: 'warn', role: 'action' }
+              ]
+            }
           ]
         },
         dino: {
           gameKey: 'dino',
           rows: [
-            [
-              { action: 'jump_primary', label: '跳跃', variant: 'accent' },
-              { action: 'restart', label: '重开', variant: 'warn' }
-            ]
+            {
+              role: 'actions',
+              buttons: [
+                { action: 'jump_primary', label: '跳跃', variant: 'accent', role: 'action' },
+                { action: 'restart', label: '重开', variant: 'warn', role: 'action' }
+              ]
+            }
           ]
         },
         flappy: {
           gameKey: 'flappy',
           rows: [
-            [
-              { action: 'flap_primary', label: '起飞', variant: 'accent' },
-              { action: 'restart', label: '重开', variant: 'warn' }
-            ]
+            {
+              role: 'actions',
+              buttons: [
+                { action: 'flap_primary', label: '起飞', variant: 'accent', role: 'action' },
+                { action: 'restart', label: '重开', variant: 'warn', role: 'action' }
+              ]
+            }
           ]
         }
       };
@@ -93,21 +113,20 @@
         return;
       }
 
-      ui.setMobileControls(this.mobileLayouts[this.activeGameKey] || null);
+      const baseConfig = this.mobileLayouts[this.activeGameKey];
+      if (!baseConfig) {
+        ui.setMobileControls(null);
+        return;
+      }
+
+      ui.setMobileControls({
+        ...baseConfig,
+        layout: this.isLandscape() ? 'landscape' : 'portrait'
+      });
     }
 
     updateOrientationOverlay() {
-      const shouldShow = Boolean(
-        this.activeGame
-        && this.isMobileViewport()
-        && !this.isLandscape()
-        && !this.allowPortraitPlay
-      );
-
-      ui.setOrientationOverlay(
-        shouldShow,
-        '建议横屏获得最佳操作体验，你也可以继续竖屏游玩。'
-      );
+      ui.setOrientationOverlay(false);
     }
 
     dispatchAction(action, payload) {
@@ -164,7 +183,6 @@
       this.stopRepeatAction();
       this.activeGame = null;
       this.activeGameKey = null;
-      this.allowPortraitPlay = false;
       refs.menuView.classList.remove('hidden');
       refs.gameView.classList.add('hidden');
       ui.resetPanels();
@@ -183,7 +201,6 @@
 
       this.activeGameKey = gameKey;
       this.activeGame = item.instance;
-      this.allowPortraitPlay = false;
       ui.setTitle(item.title);
       refs.menuView.classList.add('hidden');
       refs.gameView.classList.remove('hidden');
@@ -241,16 +258,13 @@
         this.stopRepeatAction();
       });
 
-      refs.continuePortraitBtn.addEventListener('click', () => {
-        this.allowPortraitPlay = true;
-        this.updateOrientationOverlay();
-      });
-
       window.addEventListener('resize', () => {
+        this.stopRepeatAction();
         this.renderMobileControls();
         this.updateOrientationOverlay();
       });
       window.addEventListener('orientationchange', () => {
+        this.stopRepeatAction();
         this.renderMobileControls();
         this.updateOrientationOverlay();
       });
