@@ -7,6 +7,7 @@
     TetrisGame,
     SnakeGame,
     MinesweeperGame,
+    SpiderGame,
     DinoGame,
     FlappyGame
   } = window.GameHub.games;
@@ -23,6 +24,10 @@
     minesweeper: {
       title: '扫雷',
       instance: new MinesweeperGame(ui)
+    },
+    spider: {
+      title: '蜘蛛纸牌',
+      instance: new SpiderGame(ui)
     },
     dino: {
       title: '小恐龙跳障碍',

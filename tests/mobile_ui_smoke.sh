@@ -3,6 +3,7 @@ set -euo pipefail
 
 rg -n 'id="mobileControls"' docs/index.html >/dev/null
 rg -n 'id="orientationOverlay"' docs/index.html >/dev/null
+rg -n 'data-game="spider"' docs/index.html >/dev/null
 rg -n 'mobile-controls' docs/styles/main.css >/dev/null
 rg -n 'id="infoDrawer"' docs/index.html >/dev/null
 rg -n 'id="infoToggleBtn"' docs/index.html >/dev/null

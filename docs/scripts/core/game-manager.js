@@ -18,6 +18,7 @@
         tetris: 'minimal_dpad',
         snake: 'minimal_dpad',
         minesweeper: 'mode_only',
+        spider: 'mode_only',
         dino: 'canvas_only',
         flappy: 'canvas_only'
       };
@@ -68,6 +69,29 @@
               buttons: [
                 { action: 'mode_reveal', label: '翻开', role: 'action' },
                 { action: 'mode_flag', label: '插旗', variant: 'accent', role: 'action' },
+                { action: 'mode_chord', label: '快开', role: 'action' },
+                { action: 'restart', label: '重开', variant: 'warn', role: 'action' }
+              ]
+            },
+            {
+              role: 'actions',
+              buttons: [
+                { action: 'difficulty_beginner', label: '初级', role: 'action' },
+                { action: 'difficulty_intermediate', label: '中级', role: 'action' },
+                { action: 'difficulty_expert', label: '高级', role: 'action' },
+                { action: 'difficulty_custom', label: '自定', role: 'action' }
+              ]
+            }
+          ]
+        },
+        spider: {
+          gameKey: 'spider',
+          rows: [
+            {
+              role: 'actions',
+              buttons: [
+                { action: 'deal_stock', label: '发牌', variant: 'accent', role: 'action' },
+                { action: 'cycle_difficulty', label: '难度', role: 'action' },
                 { action: 'restart', label: '重开', variant: 'warn', role: 'action' }
               ]
             }

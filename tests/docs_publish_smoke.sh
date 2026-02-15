@@ -11,6 +11,7 @@ required=(
   "docs/scripts/games/tetris.js"
   "docs/scripts/games/snake.js"
   "docs/scripts/games/minesweeper.js"
+  "docs/scripts/games/spider.js"
   "docs/scripts/games/dino.js"
   "docs/scripts/games/flappy.js"
   "docs/assets/icons/favicon.svg"
