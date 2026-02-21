@@ -1,4 +1,4 @@
-# 小游戏大厅（React + TypeScript + Phaser 重构中）
+# 小游戏大厅（React + TypeScript + Phaser）
 
 ## 目录结构
 
@@ -34,6 +34,20 @@
 Local: http://localhost:5173
 ```
 
+## 验证命令
+
+```bash
+bash tests/structure_smoke.sh
+bash tests/pages_paths_smoke.sh
+bash tests/mobile_ui_smoke.sh
+bash tests/mobile_actions_smoke.sh
+bash tests/tetris_desktop_modern_smoke.sh
+bash tests/spider_minesweeper_classic_smoke.sh
+bash tests/game2048_smoke.sh
+bash tests/docs_publish_smoke.sh
+cd docs && npm run typecheck && npm run build && npm run test:unit && npm run test:e2e -- --project=chromium
+```
+
 ## 游戏列表
 - 俄罗斯方块
 - 贪吃蛇
@@ -55,3 +69,4 @@ Local: http://localhost:5173
 - Flappy Bird / 小恐龙支持仅点击画布游玩（开始、操作、重开）
 - GitHub Pages 发布根目录仍为 `docs/`
 - 当前使用 `Vite` 本地开发服务器
+- 游戏模块已迁移到 `docs/src/games/*` 的 Phaser 场景结构，后续迭代将继续补全每个游戏的完整玩法细节

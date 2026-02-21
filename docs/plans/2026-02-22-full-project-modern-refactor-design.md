@@ -128,3 +128,11 @@
   - https://vite.dev/guide/
 - React 官方新项目建议：
   - https://react.dev/learn/start-a-new-react-project
+
+## 9. 执行状态（2026-02-22）
+
+- 架构迁移已完成：React + Vite + TypeScript + Phaser v3.90 已接管运行时。
+- 主题系统已上线：支持 `system/day/night`，并具备本地持久化。
+- 菜单、设置弹窗、游戏页抽屉与覆盖层已完成新 UI 重构。
+- 七个游戏均已迁移到 `src/games/*` 模块并接入 PhaserBridge。
+- 已建立质量基线：smoke、Vitest、Playwright（chromium）均可执行并通过。
