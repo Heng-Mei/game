@@ -130,6 +130,11 @@ button {
   background: #171e2d;
 }
 
+.toggle-btn[data-kind='action'][aria-pressed='false'] {
+  color: var(--text);
+  background: var(--panel-alt);
+}
+
 .layout {
   display: grid;
   grid-template-columns: 1fr 280px;
@@ -160,7 +165,8 @@ button {
 }
 
 #mainCanvas,
-#nextCanvas {
+#nextCanvas,
+#holdCanvas {
   max-width: 100%;
   height: auto;
   border: 1px solid var(--border);

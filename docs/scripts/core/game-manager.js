@@ -300,6 +300,14 @@
           this.activeGame.onKeyDown(event);
         }
       });
+      document.addEventListener('keyup', (event) => {
+        if (!this.activeGame) {
+          return;
+        }
+        if (typeof this.activeGame.onKeyUp === 'function') {
+          this.activeGame.onKeyUp(event);
+        }
+      });
 
       refs.mainCanvas.addEventListener('pointerdown', (event) => {
         if (!this.activeGame) {

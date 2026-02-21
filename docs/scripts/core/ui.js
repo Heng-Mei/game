@@ -13,6 +13,8 @@
     mainCanvas: document.getElementById('mainCanvas'),
     nextCard: document.getElementById('nextCard'),
     nextCanvas: document.getElementById('nextCanvas'),
+    holdCard: document.getElementById('holdCard'),
+    holdCanvas: document.getElementById('holdCanvas'),
     settingsCard: document.getElementById('settingsCard'),
     settingsContainer: document.getElementById('settingsContainer'),
     statusList: document.getElementById('statusList'),
@@ -29,6 +31,7 @@
 
   refs.mainCtx = refs.mainCanvas.getContext('2d');
   refs.nextCtx = refs.nextCanvas.getContext('2d');
+  refs.holdCtx = refs.holdCanvas.getContext('2d');
 
   const ui = {
     setCanvasSize(width, height) {
@@ -73,6 +76,13 @@
       }
     },
 
+    showHoldCanvas(visible) {
+      refs.holdCard.classList.toggle('hidden', !visible);
+      if (!visible) {
+        refs.holdCtx.clearRect(0, 0, refs.holdCanvas.width, refs.holdCanvas.height);
+      }
+    },
+
     setSettings(defs) {
       refs.settingsContainer.innerHTML = '';
       refs.settingsCard.classList.toggle('hidden', defs.length === 0);
@@ -81,8 +91,12 @@
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'toggle-btn';
-        btn.setAttribute('aria-pressed', String(def.enabled));
-        btn.textContent = `${def.label}：${def.enabled ? '开' : '关'}`;
+        const actionItem = def.kind === 'action';
+        if (actionItem) {
+          btn.setAttribute('data-kind', 'action');
+        }
+        btn.setAttribute('aria-pressed', actionItem ? 'false' : String(def.enabled));
+        btn.textContent = actionItem ? def.label : `${def.label}：${def.enabled ? '开' : '关'}`;
         btn.addEventListener('click', () => {
           def.onToggle();
         });
@@ -185,6 +199,7 @@
 
     resetPanels() {
       this.showNextCanvas(false);
+      this.showHoldCanvas(false);
       this.setSettings([]);
       this.setStatus([]);
       this.setControls([]);
