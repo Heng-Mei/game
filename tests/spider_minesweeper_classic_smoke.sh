@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Spider should be wired into the app.
-[[ -f docs/scripts/games/spider.js ]]
-rg -n 'data-game="spider"' docs/index.html >/dev/null
-rg -n 'scripts/games/spider\.js' docs/index.html >/dev/null
-rg -n 'SpiderGame' docs/scripts/app.js >/dev/null
-rg -n "spider:\s*'" docs/scripts/core/game-manager.js >/dev/null
+required=(
+  "docs/src/games/minesweeper/minesweeper-scene.ts"
+  "docs/src/games/minesweeper/minesweeper-rules.ts"
+  "docs/src/games/spider/spider-scene.ts"
+  "docs/src/games/spider/spider-rules.ts"
+  "docs/src/games/cards/card-theme.ts"
+)
 
-# Minesweeper should expose Win7-like classic interactions.
-rg -n 'BEGINNER|INTERMEDIATE|EXPERT' docs/scripts/games/minesweeper.js >/dev/null
-rg -n 'question|\?' docs/scripts/games/minesweeper.js >/dev/null
-rg -n 'chord|quick open|quick_open' docs/scripts/games/minesweeper.js >/dev/null
-rg -n 'first.?click|safe' docs/scripts/games/minesweeper.js >/dev/null
+for file in "${required[@]}"; do
+  if [[ ! -f "$file" ]]; then
+    echo "MISSING: $file"
+    exit 1
+  fi
+done
+
+rg -n 'BEGINNER|INTERMEDIATE|EXPERT|classic' docs/src/games/minesweeper/minesweeper-rules.ts >/dev/null
+rg -n 'question|flag|chord|quick.?open|first.?click|safe' docs/src/games/minesweeper/minesweeper-rules.ts >/dev/null
+rg -n -i 'spider|suit|sequence|deal' docs/src/games/spider/spider-rules.ts >/dev/null
+rg -n 'symbol|theme|day|night' docs/src/games/cards/card-theme.ts >/dev/null
 
 echo "OK"

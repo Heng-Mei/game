@@ -304,3 +304,39 @@ body {
   margin: 6px 0;
   color: var(--color-muted);
 }
+
+.tetris-settings {
+  display: grid;
+  gap: 10px;
+}
+
+.tetris-settings h3 {
+  margin: 0;
+}
+
+.tetris-settings ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.tetris-settings li {
+  margin: 4px 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tetris-settings label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tetris-settings input {
+  width: 70px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 4px 6px;
+}

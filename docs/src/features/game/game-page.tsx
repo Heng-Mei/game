@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GameHost } from '../../game-core/game-host';
 import type { GameOutgoingEvent } from '../../game-core/events';
 import { useGameSessionStore } from '../../stores/game-session-store';
@@ -8,9 +8,11 @@ import { useUiStore } from '../../stores/ui-store';
 import { Button } from '../../ui/button';
 import { Drawer } from '../../ui/drawer';
 import { GameOverlay } from './game-overlay';
+import { TetrisSettingsModal } from '../../games/tetris/tetris-settings-modal';
 
 export function GamePage() {
   const { gameId = 'unknown' } = useParams();
+  const [tetrisSettingsOpen, setTetrisSettingsOpen] = useState(false);
   const { resolvedTheme } = useTheme();
   const score = useGameSessionStore((state) => state.score);
   const status = useGameSessionStore((state) => state.status);
@@ -43,6 +45,9 @@ export function GamePage() {
         <div className="game-page-actions">
           <span>状态：{status}</span>
           <span>分数：{score}</span>
+          {gameId === 'tetris' ? (
+            <Button onClick={() => setTetrisSettingsOpen(true)}>键位设置</Button>
+          ) : null}
           <Button onClick={() => setInfoDrawerOpen(!infoDrawerOpen)}>
             {infoDrawerOpen ? '收起信息' : '展开信息'}
           </Button>
@@ -58,6 +63,9 @@ export function GamePage() {
         <p>当前状态：{status}</p>
         <p>当前分数：{score}</p>
       </Drawer>
+      {gameId === 'tetris' ? (
+        <TetrisSettingsModal open={tetrisSettingsOpen} onClose={() => setTetrisSettingsOpen(false)} />
+      ) : null}
     </section>
   );
 }

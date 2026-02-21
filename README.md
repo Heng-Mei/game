@@ -12,9 +12,10 @@
 │  ├─ assets/icons/
 │  ├─ src/
 │  │  ├─ app/
+│  │  ├─ game-core/
+│  │  ├─ games/
 │  │  ├─ styles/
 │  │  └─ ...
-│  ├─ scripts/games/   # 旧游戏逻辑（迁移中）
 │  └─ plans/
 ├─ scripts/run.sh
 ├─ run.sh

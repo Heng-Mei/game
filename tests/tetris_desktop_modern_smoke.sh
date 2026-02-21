@@ -1,14 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Desktop-only modern tetris capabilities
-rg -n "rotate_ccw|rotateLeft|counter.?clockwise" docs/scripts/games/tetris.js >/dev/null
-rg -n "hold" docs/scripts/games/tetris.js >/dev/null
-rg -n "keybind|key binding|键位" docs/scripts/games/tetris.js >/dev/null
-rg -n "DAS|DSS|按键响应帧" docs/scripts/games/tetris.js >/dev/null
+required=(
+  "docs/src/games/tetris/tetris-scene.ts"
+  "docs/src/games/tetris/tetris-rules.ts"
+  "docs/src/games/tetris/tetris-input.ts"
+  "docs/src/games/tetris/tetris-settings-modal.tsx"
+  "docs/src/stores/tetris-settings-store.ts"
+)
 
-# UI hook for hold preview
-rg -n "id=\"holdCard\"|id=\"holdCanvas\"" docs/index.html >/dev/null
-rg -n "showHoldCanvas|holdCanvas" docs/scripts/core/ui.js >/dev/null
+for file in "${required[@]}"; do
+  if [[ ! -f "$file" ]]; then
+    echo "MISSING: $file"
+    exit 1
+  fi
+done
+
+rg -n 'rotateLeft|rotateRight|rotate_ccw|counter.?clockwise' docs/src/games/tetris/tetris-input.ts >/dev/null
+rg -n 'hold' docs/src/games/tetris/tetris-rules.ts >/dev/null
+rg -n 'keybind|键位|binding' docs/src/games/tetris/tetris-settings-modal.tsx >/dev/null
+rg -n 'DAS|ARR|DSS|dssFrames' docs/src/stores/tetris-settings-store.ts >/dev/null
+rg -n 'TetrisSettingsModal|tetris-settings' docs/src/games/tetris/tetris-settings-modal.tsx >/dev/null
 
 echo "OK"

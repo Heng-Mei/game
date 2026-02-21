@@ -1,6 +1,13 @@
 import Phaser from 'phaser';
 import { BaseScene } from './base-scene';
 import type { GameIncomingEvent, GameOutgoingEvent } from './events';
+import { TetrisScene } from '../games/tetris/tetris-scene';
+import { MinesweeperScene } from '../games/minesweeper/minesweeper-scene';
+import { SpiderScene } from '../games/spider/spider-scene';
+import { G2048Scene } from '../games/g2048/g2048-scene';
+import { SnakeScene } from '../games/snake/snake-scene';
+import { FlappyScene } from '../games/flappy/flappy-scene';
+import { DinoScene } from '../games/dino/dino-scene';
 
 class PlaceholderScene extends BaseScene {
   private theme: 'day' | 'night';
@@ -33,13 +40,42 @@ type BridgeMountOptions = {
   onEvent?: (event: GameOutgoingEvent) => void;
 };
 
+function createSceneForGame(
+  gameId: string,
+  theme: 'day' | 'night',
+  onEvent?: (event: GameOutgoingEvent) => void
+): BaseScene {
+  if (gameId === 'tetris') {
+    return new TetrisScene(theme, onEvent);
+  }
+  if (gameId === 'minesweeper') {
+    return new MinesweeperScene(theme, onEvent);
+  }
+  if (gameId === 'spider') {
+    return new SpiderScene(theme, onEvent);
+  }
+  if (gameId === 'g2048') {
+    return new G2048Scene(theme, onEvent);
+  }
+  if (gameId === 'snake') {
+    return new SnakeScene(theme, onEvent);
+  }
+  if (gameId === 'flappy') {
+    return new FlappyScene(theme, onEvent);
+  }
+  if (gameId === 'dino') {
+    return new DinoScene(theme, onEvent);
+  }
+  return new PlaceholderScene(gameId, theme, onEvent);
+}
+
 export class PhaserBridge {
   private game: Phaser.Game | null = null;
 
   mount(options: BridgeMountOptions): void {
     this.destroy();
 
-    const scene = new PlaceholderScene(options.gameId, options.theme, options.onEvent);
+    const scene = createSceneForGame(options.gameId, options.theme, options.onEvent);
     this.game = new Phaser.Game({
       type: Phaser.AUTO,
       parent: options.parent,

@@ -3,18 +3,12 @@ set -euo pipefail
 
 required=(
   "docs/index.html"
-  "docs/styles/main.css"
-  "docs/scripts/app.js"
-  "docs/scripts/core/ui.js"
-  "docs/scripts/core/game-manager.js"
-  "docs/scripts/core/loop.js"
-  "docs/scripts/games/tetris.js"
-  "docs/scripts/games/snake.js"
-  "docs/scripts/games/minesweeper.js"
-  "docs/scripts/games/spider.js"
-  "docs/scripts/games/game2048.js"
-  "docs/scripts/games/dino.js"
-  "docs/scripts/games/flappy.js"
+  "docs/package.json"
+  "docs/tsconfig.json"
+  "docs/vite.config.ts"
+  "docs/src/main.tsx"
+  "docs/src/app/App.tsx"
+  "docs/src/app/router.tsx"
   "docs/assets/icons/favicon.svg"
   "docs/assets/icons/favicon.ico"
 )
@@ -26,9 +20,23 @@ for file in "${required[@]}"; do
   fi
 done
 
+if [[ -d docs/scripts ]]; then
+  echo "FAIL: docs/scripts directory should be removed in React refactor"
+  exit 1
+fi
+
 if rg -n '(href|src)="/' docs/index.html >/dev/null; then
   echo "FAIL: found root-absolute asset paths in docs/index.html"
   rg -n '(href|src)="/' docs/index.html
+  exit 1
+fi
+
+rg -n 'src="./src/main\.tsx"' docs/index.html >/dev/null
+rg -n "base:\\s*\"\\./\"|base:\\s*'\\./'" docs/vite.config.ts >/dev/null
+
+if rg -n 'scripts/core|scripts/games|styles/main\\.css' docs/index.html >/dev/null; then
+  echo "FAIL: legacy static runtime references still exist in docs/index.html"
+  rg -n 'scripts/core|scripts/games|styles/main\\.css' docs/index.html
   exit 1
 fi
 
