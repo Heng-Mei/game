@@ -1,0 +1,59 @@
+:root {
+  color-scheme: light;
+  --bg: #f3f5f9;
+  --surface: #ffffff;
+  --text: #101727;
+  --muted: #516179;
+  --line: #d7deea;
+  --primary: #2563eb;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: radial-gradient(circle at top, #ffffff, var(--bg));
+  color: var(--text);
+}
+
+.app-shell {
+  width: min(1080px, calc(100% - 32px));
+  margin: 24px auto;
+  display: grid;
+  gap: 14px;
+}
+
+.topbar {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-size: 18px;
+}
+
+.badge {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.panel-card {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.panel-card h1 {
+  margin: 0 0 10px;
+  font-size: 30px;
+}
+
+.panel-card p {
+  margin: 0;
+  color: var(--muted);
+}

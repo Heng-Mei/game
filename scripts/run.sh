@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Open in browser: http://localhost:8080"
-python3 -m http.server 8080 --bind 127.0.0.1 --directory docs
+cd "$(dirname "$0")/../docs"
+
+if [[ ! -d node_modules ]]; then
+  echo "Installing dependencies..."
+  npm install
+fi
+
+echo "Open in browser: http://localhost:5173"
+npm run dev -- --host 127.0.0.1 --port 5173

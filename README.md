@@ -1,4 +1,4 @@
-# 小游戏大厅（静态前端分层结构）
+# 小游戏大厅（React + TypeScript + Phaser 重构中）
 
 ## 目录结构
 
@@ -6,12 +6,15 @@
 .
 ├─ docs/
 │  ├─ index.html
+│  ├─ package.json
+│  ├─ tsconfig.json
+│  ├─ vite.config.ts
 │  ├─ assets/icons/
-│  ├─ styles/main.css
-│  ├─ scripts/
-│  │  ├─ app.js
-│  │  ├─ core/
-│  │  └─ games/
+│  ├─ src/
+│  │  ├─ app/
+│  │  ├─ styles/
+│  │  └─ ...
+│  ├─ scripts/games/   # 旧游戏逻辑（迁移中）
 │  └─ plans/
 ├─ scripts/run.sh
 ├─ run.sh
@@ -24,10 +27,10 @@
 ./run.sh
 ```
 
-终端会打印：
+首次运行会自动安装依赖，终端会打印：
 
 ```text
-http://localhost:8080
+Local: http://localhost:5173
 ```
 
 ## 游戏列表
@@ -49,5 +52,5 @@ http://localhost:8080
 - 底部抽屉开关状态会被记忆，下次进入移动端游戏时沿用
 - 俄罗斯方块在移动端始终显示“下一个方块”右上角浮卡
 - Flappy Bird / 小恐龙支持仅点击画布游玩（开始、操作、重开）
-- GitHub Pages 发布根目录为 `docs/`
-- 启动仍基于 Python `http.server`，未引入 npm 依赖
+- GitHub Pages 发布根目录仍为 `docs/`
+- 当前使用 `Vite` 本地开发服务器
