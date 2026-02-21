@@ -1,5 +1,6 @@
 export const SIZE = 4;
 export const SPAWN_TWO_CHANCE = 0.9;
+export const GAME_TARGET = 2048;
 
 export const ANIMATION_CONFIG = {
   slideMs: 90,

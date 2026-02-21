@@ -1,4 +1,5 @@
 export type TetrominoType = 'I' | 'O' | 'T' | 'S' | 'Z' | 'J' | 'L';
+export const START_LEVEL = 1;
 
 export const TETROMINO_SEQUENCE: TetrominoType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'];
 
@@ -12,7 +13,7 @@ export type TetrisRuntimeState = {
 export function createInitialTetrisState(): TetrisRuntimeState {
   return {
     score: 0,
-    level: 1,
+    level: START_LEVEL,
     lines: 0,
     hold: null
   };
