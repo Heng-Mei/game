@@ -71,9 +71,12 @@ function createSceneForGame(
 
 export class PhaserBridge {
   private game: Phaser.Game | null = null;
+  private parent: HTMLElement | null = null;
 
   mount(options: BridgeMountOptions): void {
+    this.parent = options.parent;
     this.destroy();
+    options.parent.innerHTML = '';
 
     const scene = createSceneForGame(options.gameId, options.theme, options.onEvent);
     this.game = new Phaser.Game({
@@ -101,10 +104,12 @@ export class PhaserBridge {
   }
 
   destroy(): void {
-    if (!this.game) {
-      return;
+    if (this.game) {
+      this.game.destroy(true);
+      this.game = null;
     }
-    this.game.destroy(true);
-    this.game = null;
+    if (this.parent) {
+      this.parent.innerHTML = '';
+    }
   }
 }
