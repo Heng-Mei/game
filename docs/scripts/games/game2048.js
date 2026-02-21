@@ -14,6 +14,9 @@
       this.SWIPE_THRESHOLD = 10;
       this.boardPx = this.PADDING * 2 + this.SIZE * this.CELL + (this.SIZE - 1) * this.GAP;
 
+      this.SLIDE_DURATION_MS = 90;
+      this.POP_DURATION_MS = 70;
+
       this.bestScoreStorageKey = 'gamehub.2048.best_score';
       this.winTipStorageKey = 'gamehub.2048.win_tip';
 
@@ -66,7 +69,7 @@
         '电脑端：方向键 / WASD 移动，R 重开',
         '手机端：在画布上滑动（上/下/左/右）',
         '规则：仅有效移动才会新增数字，2/4 生成概率为 90%/10%',
-        '达成 2048 后可继续挑战更高分'
+        '动画：滑动 90ms，合并回弹+新砖块弹入 70ms'
       ]);
       this.renderSettings();
       this.reset();
@@ -75,6 +78,7 @@
     exit() {
       this.ui.setSettings([]);
       this.swipeStart = null;
+      this.animation = null;
     }
 
     renderSettings() {
@@ -91,6 +95,10 @@
       ]);
     }
 
+    cloneGrid(grid) {
+      return grid.map((row) => row.slice());
+    }
+
     reset() {
       this.grid = Array.from({ length: this.SIZE }, () => Array(this.SIZE).fill(0));
       this.score = 0;
@@ -98,6 +106,7 @@
       this.reached2048 = false;
       this.gameOver = false;
       this.swipeStart = null;
+      this.animation = null;
 
       this.addRandomTile();
       this.addRandomTile();
@@ -138,12 +147,17 @@
       }
 
       if (!empties.length) {
-        return false;
+        return null;
       }
 
       const target = empties[Math.floor(Math.random() * empties.length)];
-      this.grid[target.y][target.x] = Math.random() < 0.9 ? 2 : 4;
-      return true;
+      const value = Math.random() < 0.9 ? 2 : 4;
+      this.grid[target.y][target.x] = value;
+      return {
+        x: target.x,
+        y: target.y,
+        value: value
+      };
     }
 
     hasAvailableMoves() {
@@ -164,33 +178,6 @@
       }
 
       return false;
-    }
-
-    compressAndMerge(line) {
-      const compact = line.filter((value) => value !== 0);
-      const merged = [];
-      let scoreGain = 0;
-
-      for (let i = 0; i < compact.length; i += 1) {
-        const current = compact[i];
-        const next = compact[i + 1];
-
-        if (next !== undefined && current === next) {
-          const combined = current * 2;
-          merged.push(combined);
-          scoreGain += combined;
-          i += 1;
-        } else {
-          merged.push(current);
-        }
-      }
-
-      while (merged.length < this.SIZE) {
-        merged.push(0);
-      }
-
-      const moved = merged.some((value, idx) => value !== line[idx]);
-      return { merged: merged, scoreGain: scoreGain, moved: moved };
     }
 
     getLine(index, direction) {
@@ -216,31 +203,105 @@
       }
     }
 
+    coordFromNormalized(lineIndex, pos, direction) {
+      switch (direction) {
+        case 'move_left':
+          return { x: pos, y: lineIndex };
+        case 'move_right':
+          return { x: this.SIZE - 1 - pos, y: lineIndex };
+        case 'move_up':
+          return { x: lineIndex, y: pos };
+        case 'move_down':
+          return { x: lineIndex, y: this.SIZE - 1 - pos };
+        default:
+          return { x: 0, y: 0 };
+      }
+    }
+
+    resolveLineWithMoves(line, lineIndex, direction) {
+      const nonZero = [];
+      line.forEach((value, idx) => {
+        if (value !== 0) {
+          nonZero.push({ value: value, idx: idx });
+        }
+      });
+
+      const merged = Array(this.SIZE).fill(0);
+      const movingTiles = [];
+      const mergePops = [];
+
+      let scoreGain = 0;
+      let write = 0;
+
+      for (let i = 0; i < nonZero.length; i += 1) {
+        const current = nonZero[i];
+        const next = nonZero[i + 1];
+
+        if (next && current.value === next.value) {
+          const combined = current.value * 2;
+          merged[write] = combined;
+          scoreGain += combined;
+
+          const fromA = this.coordFromNormalized(lineIndex, current.idx, direction);
+          const fromB = this.coordFromNormalized(lineIndex, next.idx, direction);
+          const to = this.coordFromNormalized(lineIndex, write, direction);
+
+          movingTiles.push({ value: current.value, fromX: fromA.x, fromY: fromA.y, toX: to.x, toY: to.y });
+          movingTiles.push({ value: next.value, fromX: fromB.x, fromY: fromB.y, toX: to.x, toY: to.y });
+          mergePops.push({ x: to.x, y: to.y });
+
+          i += 1;
+          write += 1;
+          continue;
+        }
+
+        merged[write] = current.value;
+        const from = this.coordFromNormalized(lineIndex, current.idx, direction);
+        const to = this.coordFromNormalized(lineIndex, write, direction);
+        movingTiles.push({ value: current.value, fromX: from.x, fromY: from.y, toX: to.x, toY: to.y });
+        write += 1;
+      }
+
+      const moved = merged.some((value, idx) => value !== line[idx]);
+
+      return {
+        merged: merged,
+        moved: moved,
+        scoreGain: scoreGain,
+        movingTiles: movingTiles,
+        mergePops: mergePops
+      };
+    }
+
     applyMove(direction) {
-      if (this.gameOver) {
+      if (this.gameOver || this.animation) {
         return false;
       }
 
       let movedAny = false;
       let gainTotal = 0;
+      const movingTiles = [];
+      const mergePops = [];
 
       for (let i = 0; i < this.SIZE; i += 1) {
         const original = this.getLine(i, direction);
-        const working = (direction === 'move_right' || direction === 'move_down')
+        const normalized = (direction === 'move_right' || direction === 'move_down')
           ? original.slice().reverse()
           : original.slice();
 
-        const { merged, scoreGain, moved } = this.compressAndMerge(working);
+        const result = this.resolveLineWithMoves(normalized, i, direction);
         const restored = (direction === 'move_right' || direction === 'move_down')
-          ? merged.slice().reverse()
-          : merged;
+          ? result.merged.slice().reverse()
+          : result.merged;
 
         this.setLine(i, direction, restored);
 
-        if (moved) {
+        if (result.moved) {
           movedAny = true;
         }
-        gainTotal += scoreGain;
+        gainTotal += result.scoreGain;
+        movingTiles.push(...result.movingTiles);
+        mergePops.push(...result.mergePops);
       }
 
       if (!movedAny) {
@@ -249,7 +310,7 @@
 
       this.score += gainTotal;
       this.moves += 1;
-      this.addRandomTile();
+      const spawnPop = this.addRandomTile();
 
       if (this.score > this.bestScore) {
         this.bestScore = this.score;
@@ -274,6 +335,16 @@
       }
 
       this.updateHUD();
+
+      this.animation = {
+        phase: 'slide',
+        elapsed: 0,
+        movingTiles: movingTiles,
+        mergePops: mergePops,
+        spawnPop: spawnPop,
+        finalGrid: this.cloneGrid(this.grid)
+      };
+
       return true;
     }
 
@@ -319,7 +390,7 @@
     }
 
     onPointerDown(event) {
-      if (event.pointerType === 'mouse' || event.button !== 0) {
+      if (event.pointerType === 'mouse' || event.button !== 0 || this.animation) {
         return;
       }
 
@@ -331,7 +402,7 @@
     }
 
     onPointerUp(event) {
-      if (!this.swipeStart || event.pointerType === 'mouse') {
+      if (!this.swipeStart || event.pointerType === 'mouse' || this.animation) {
         return;
       }
 
@@ -401,33 +472,137 @@
       return 24;
     }
 
-    draw() {
+    easeOutCubic(t) {
+      const p = Math.max(0, Math.min(1, t));
+      return 1 - ((1 - p) ** 3);
+    }
+
+    easeOutBack(t) {
+      const p = Math.max(0, Math.min(1, t));
+      const c1 = 1.70158;
+      const c3 = c1 + 1;
+      return 1 + c3 * ((p - 1) ** 3) + c1 * ((p - 1) ** 2);
+    }
+
+    drawBaseBoard() {
       mainCtx.fillStyle = '#bbada0';
       mainCtx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
 
       for (let y = 0; y < this.SIZE; y += 1) {
         for (let x = 0; x < this.SIZE; x += 1) {
-          const value = this.grid[y][x];
-          const px = this.PADDING + x * (this.CELL + this.GAP);
-          const py = this.PADDING + y * (this.CELL + this.GAP);
-
-          mainCtx.fillStyle = this.tileColor(value);
-          mainCtx.fillRect(px, py, this.CELL, this.CELL);
-
-          if (!value) {
-            continue;
-          }
-
-          mainCtx.fillStyle = this.tileTextColor(value);
-          mainCtx.font = `bold ${this.tileFontSize(value)}px sans-serif`;
-          mainCtx.textAlign = 'center';
-          mainCtx.textBaseline = 'middle';
-          mainCtx.fillText(String(value), px + this.CELL / 2, py + this.CELL / 2 + 1);
+          this.drawTileAt(x, y, 0, 1);
         }
       }
     }
 
-    update() {
+    drawTileAt(x, y, value, scale = 1) {
+      const baseX = this.PADDING + x * (this.CELL + this.GAP);
+      const baseY = this.PADDING + y * (this.CELL + this.GAP);
+
+      const drawSize = this.CELL * scale;
+      const px = baseX + (this.CELL - drawSize) / 2;
+      const py = baseY + (this.CELL - drawSize) / 2;
+
+      mainCtx.fillStyle = this.tileColor(value);
+      mainCtx.fillRect(px, py, drawSize, drawSize);
+
+      if (!value) {
+        return;
+      }
+
+      mainCtx.fillStyle = this.tileTextColor(value);
+      mainCtx.font = `bold ${this.tileFontSize(value) * scale}px sans-serif`;
+      mainCtx.textAlign = 'center';
+      mainCtx.textBaseline = 'middle';
+      mainCtx.fillText(String(value), px + drawSize / 2, py + drawSize / 2 + 1);
+    }
+
+    drawStaticGrid(grid) {
+      this.drawBaseBoard();
+      for (let y = 0; y < this.SIZE; y += 1) {
+        for (let x = 0; x < this.SIZE; x += 1) {
+          const value = grid[y][x];
+          if (value) {
+            this.drawTileAt(x, y, value, 1);
+          }
+        }
+      }
+    }
+
+    popScaleAt(x, y, progress) {
+      if (!this.animation || this.animation.phase !== 'pop') {
+        return 1;
+      }
+
+      let scale = 1;
+
+      const mergeHit = this.animation.mergePops
+        .some((tile) => tile.x === x && tile.y === y);
+      if (mergeHit) {
+        scale = Math.max(scale, 1 + 0.16 * Math.sin(progress * Math.PI));
+      }
+
+      const spawn = this.animation.spawnPop;
+      if (spawn && spawn.x === x && spawn.y === y) {
+        scale = Math.max(scale, 0.72 + 0.28 * this.easeOutBack(progress));
+      }
+
+      return scale;
+    }
+
+    drawPopFrame(progress) {
+      this.drawBaseBoard();
+
+      for (let y = 0; y < this.SIZE; y += 1) {
+        for (let x = 0; x < this.SIZE; x += 1) {
+          const value = this.grid[y][x];
+          if (!value) {
+            continue;
+          }
+          const scale = this.popScaleAt(x, y, progress);
+          this.drawTileAt(x, y, value, scale);
+        }
+      }
+    }
+
+    drawSlideFrame(progress) {
+      this.drawBaseBoard();
+
+      this.animation.movingTiles.forEach((tile) => {
+        const x = tile.fromX + (tile.toX - tile.fromX) * progress;
+        const y = tile.fromY + (tile.toY - tile.fromY) * progress;
+        this.drawTileAt(x, y, tile.value, 1);
+      });
+    }
+
+    draw() {
+      if (!this.animation) {
+        this.drawStaticGrid(this.grid);
+        return;
+      }
+
+      if (this.animation.phase === 'slide') {
+        const progress = this.easeOutCubic(this.animation.elapsed / this.SLIDE_DURATION_MS);
+        this.drawSlideFrame(progress);
+        return;
+      }
+
+      const popProgress = this.animation.elapsed / this.POP_DURATION_MS;
+      this.drawPopFrame(popProgress);
+    }
+
+    update(delta) {
+      if (this.animation) {
+        this.animation.elapsed += delta;
+
+        if (this.animation.phase === 'slide' && this.animation.elapsed >= this.SLIDE_DURATION_MS) {
+          this.animation.phase = 'pop';
+          this.animation.elapsed = 0;
+        } else if (this.animation.phase === 'pop' && this.animation.elapsed >= this.POP_DURATION_MS) {
+          this.animation = null;
+        }
+      }
+
       this.draw();
     }
   }

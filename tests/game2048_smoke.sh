@@ -22,5 +22,7 @@ rg -n '2048' docs/scripts/games/game2048.js >/dev/null
 rg -n 'merge|combine' docs/scripts/games/game2048.js >/dev/null
 rg -n 'ArrowLeft|ArrowRight|ArrowUp|ArrowDown' docs/scripts/games/game2048.js >/dev/null
 rg -n 'swipe|threshold|touch' docs/scripts/games/game2048.js >/dev/null
+rg -n 'animation|slide|pop|movingTiles|mergePops|spawnPop' docs/scripts/games/game2048.js >/dev/null
+rg -n 'lerp|ease|interpolate' docs/scripts/games/game2048.js >/dev/null
 
 echo "OK"
