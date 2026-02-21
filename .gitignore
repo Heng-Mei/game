@@ -1,0 +1,6 @@
+.worktrees/
+docs/node_modules/
+docs/dist/
+docs/.vite/
+docs/playwright-report/
+docs/test-results/
