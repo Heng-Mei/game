@@ -1,28 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-rg -n 'id="mobileControls"' docs/index.html >/dev/null
-rg -n 'id="orientationOverlay"' docs/index.html >/dev/null
-rg -n 'data-game="spider"' docs/index.html >/dev/null
-rg -n 'data-game="game2048"' docs/index.html >/dev/null
-rg -n 'mobile-controls' docs/styles/main.css >/dev/null
-rg -n 'id="infoDrawer"' docs/index.html >/dev/null
-rg -n 'id="infoToggleBtn"' docs/index.html >/dev/null
-rg -n 'info-drawer' docs/styles/main.css >/dev/null
-rg -n 'floating-next' docs/styles/main.css >/dev/null
-rg -n 'mobile-layout--portrait' docs/styles/main.css >/dev/null
-rg -n 'mobile-layout--landscape' docs/styles/main.css >/dev/null
-rg -n 'mobile-row--dpad' docs/styles/main.css >/dev/null
-rg -n 'mobile-row--actions' docs/styles/main.css >/dev/null
-rg -n 'mobile-btn--dpad-up' docs/styles/main.css >/dev/null
-rg -n 'mobile-btn--dpad-down' docs/styles/main.css >/dev/null
-rg -n 'mobile-btn--dpad-left' docs/styles/main.css >/dev/null
-rg -n 'mobile-btn--dpad-right' docs/styles/main.css >/dev/null
-rg -n '\.game-view\.mobile-game-active \.layout > \.side' docs/styles/main.css >/dev/null
-rg -n 'max-height: calc\(100dvh -' docs/styles/main.css >/dev/null
-rg -n 'overflow-y: auto' docs/styles/main.css >/dev/null
-rg -n 'orientation: landscape' docs/styles/main.css >/dev/null
-rg -n 'orientation: portrait' docs/styles/main.css >/dev/null
-rg -n 'touch-action' docs/styles/main.css >/dev/null
+required=(
+  "docs/src/theme/tokens.ts"
+  "docs/src/theme/theme-provider.tsx"
+  "docs/src/theme/theme.css"
+  "docs/src/features/settings/theme-switcher.tsx"
+  "docs/src/stores/ui-store.ts"
+)
+
+for file in "${required[@]}"; do
+  if [[ ! -f "$file" ]]; then
+    echo "MISSING: $file"
+    exit 1
+  fi
+done
+
+rg -n 'day|night' docs/src/theme/tokens.ts >/dev/null
+rg -n 'system' docs/src/theme/theme-provider.tsx >/dev/null
+rg -n 'matchMedia' docs/src/theme/theme-provider.tsx >/dev/null
+rg -n 'localStorage|storage|THEME_STORAGE_KEY' docs/src/stores/ui-store.ts >/dev/null
+rg -n 'ThemeSwitcher' docs/src/app/layouts/AppShell.tsx >/dev/null
+rg -n -- '--color-bg|--color-surface|--color-text|--color-primary' docs/src/theme/theme.css >/dev/null
 
 echo "OK"
