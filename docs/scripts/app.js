@@ -9,7 +9,8 @@
     MinesweeperGame,
     SpiderGame,
     DinoGame,
-    FlappyGame
+    FlappyGame,
+    Game2048
   } = window.GameHub.games;
 
   const games = {
@@ -36,6 +37,10 @@
     flappy: {
       title: 'Flappy Bird',
       instance: new FlappyGame(ui)
+    },
+    game2048: {
+      title: '2048',
+      instance: new Game2048(ui)
     }
   };
 

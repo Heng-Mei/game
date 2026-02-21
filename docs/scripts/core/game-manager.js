@@ -20,7 +20,8 @@
         minesweeper: 'mode_only',
         spider: 'mode_only',
         dino: 'canvas_only',
-        flappy: 'canvas_only'
+        flappy: 'canvas_only',
+        game2048: 'canvas_only'
       };
       this.mobileLayouts = {
         tetris: {
@@ -335,6 +336,16 @@
       refs.mainCanvas.addEventListener('contextmenu', (event) => {
         if (this.activeGame && typeof this.activeGame.onContextMenu === 'function') {
           this.activeGame.onContextMenu(event);
+        }
+      });
+      refs.mainCanvas.addEventListener('pointerup', (event) => {
+        if (this.activeGame && typeof this.activeGame.onPointerUp === 'function') {
+          this.activeGame.onPointerUp(event);
+        }
+      });
+      refs.mainCanvas.addEventListener('pointercancel', (event) => {
+        if (this.activeGame && typeof this.activeGame.onPointerCancel === 'function') {
+          this.activeGame.onPointerCancel(event);
         }
       });
 

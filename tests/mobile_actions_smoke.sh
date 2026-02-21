@@ -11,6 +11,7 @@ rg -n 'infoDrawerOpen' docs/scripts/core/game-manager.js >/dev/null
 rg -n 'loadInfoDrawerState' docs/scripts/core/game-manager.js >/dev/null
 rg -n "dino: 'canvas_only'" docs/scripts/core/game-manager.js >/dev/null
 rg -n "flappy: 'canvas_only'" docs/scripts/core/game-manager.js >/dev/null
+rg -n "game2048: 'canvas_only'" docs/scripts/core/game-manager.js >/dev/null
 rg -n "spider: 'mode_only'" docs/scripts/core/game-manager.js >/dev/null
 rg -n "action: 'mode_chord'" docs/scripts/core/game-manager.js >/dev/null
 rg -n "action: 'difficulty_custom'" docs/scripts/core/game-manager.js >/dev/null
@@ -24,6 +25,7 @@ rg -n 'onAction\(action\)' docs/scripts/games/tetris.js >/dev/null
 rg -n 'onAction\(action\)' docs/scripts/games/snake.js >/dev/null
 rg -n 'onAction\(action\)' docs/scripts/games/minesweeper.js >/dev/null
 rg -n 'onAction\(action\)' docs/scripts/games/spider.js >/dev/null
+rg -n 'onAction\(action\)' docs/scripts/games/game2048.js >/dev/null
 rg -n 'onAction\(action\)' docs/scripts/games/dino.js >/dev/null
 rg -n 'onAction\(action\)' docs/scripts/games/flappy.js >/dev/null
 
