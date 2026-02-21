@@ -1,71 +1,58 @@
 import { Link, useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
-import { GameHost } from '../../game-core/game-host';
-import type { GameOutgoingEvent } from '../../game-core/events';
+import { useEffect } from 'react';
 import { useGameSessionStore } from '../../stores/game-session-store';
-import { useTheme } from '../../theme/theme-provider';
 import { useUiStore } from '../../stores/ui-store';
 import { Button } from '../../ui/button';
 import { Drawer } from '../../ui/drawer';
-import { GameOverlay } from './game-overlay';
-import { TetrisSettingsModal } from '../../games/tetris/tetris-settings-modal';
+import { gameCatalog } from '../../shared/game-catalog';
+
+const legacyGameMap: Record<string, string> = {
+  tetris: 'tetris',
+  snake: 'snake',
+  minesweeper: 'minesweeper',
+  spider: 'spider',
+  flappy: 'flappy',
+  dino: 'dino',
+  g2048: 'game2048'
+};
 
 export function GamePage() {
   const { gameId = 'unknown' } = useParams();
-  const [tetrisSettingsOpen, setTetrisSettingsOpen] = useState(false);
-  const { resolvedTheme } = useTheme();
-  const score = useGameSessionStore((state) => state.score);
-  const status = useGameSessionStore((state) => state.status);
   const setActiveGame = useGameSessionStore((state) => state.setActiveGame);
-  const setScore = useGameSessionStore((state) => state.setScore);
-  const setStatus = useGameSessionStore((state) => state.setStatus);
   const infoDrawerOpen = useUiStore((state) => state.isInfoDrawerOpen);
   const setInfoDrawerOpen = useUiStore((state) => state.setInfoDrawerOpen);
+  const item = gameCatalog.find((game) => game.id === gameId);
+  const title = item ? item.name : gameId;
+  const legacyGame = legacyGameMap[gameId];
 
   useEffect(() => {
     setActiveGame(gameId);
   }, [gameId, setActiveGame]);
 
-  const onEvent = useCallback(
-    (event: GameOutgoingEvent) => {
-      if (event.type === 'SCORE_CHANGED') {
-        setScore(event.score);
-      }
-      if (event.type === 'GAME_STATE_CHANGED') {
-        setStatus(event.state);
-      }
-    },
-    [setScore, setStatus]
-  );
-
   return (
     <section className="panel-card game-page">
       <div className="game-page-head">
-        <h1>{gameId}</h1>
+        <h1>{title}</h1>
         <div className="game-page-actions">
-          <span>状态：{status}</span>
-          <span>分数：{score}</span>
-          {gameId === 'tetris' ? (
-            <Button onClick={() => setTetrisSettingsOpen(true)}>键位设置</Button>
-          ) : null}
           <Button onClick={() => setInfoDrawerOpen(!infoDrawerOpen)}>
             {infoDrawerOpen ? '收起信息' : '展开信息'}
           </Button>
           <Link to="/">返回菜单</Link>
         </div>
       </div>
-      <div className="game-host-wrap">
-        <GameHost gameId={gameId} theme={resolvedTheme} onEvent={onEvent} />
-        <GameOverlay status={status} />
-      </div>
+      {legacyGame ? (
+        <iframe
+          title={title}
+          className="legacy-game-frame"
+          src={`./legacy/index.html?game=${legacyGame}`}
+        />
+      ) : (
+        <p>未找到该游戏。</p>
+      )}
       <Drawer open={infoDrawerOpen} title="游戏信息" onClose={() => setInfoDrawerOpen(false)}>
-        <p>当前游戏：{gameId}</p>
-        <p>当前状态：{status}</p>
-        <p>当前分数：{score}</p>
+        <p>{item ? item.summary : '请选择大厅中的游戏开始。'}</p>
+        <p>支持桌面端与手机端游玩，可随时返回大厅切换游戏。</p>
       </Drawer>
-      {gameId === 'tetris' ? (
-        <TetrisSettingsModal open={tetrisSettingsOpen} onClose={() => setTetrisSettingsOpen(false)} />
-      ) : null}
     </section>
   );
 }

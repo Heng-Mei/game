@@ -134,6 +134,14 @@ body {
   min-height: 600px;
 }
 
+.legacy-game-frame {
+  width: 100%;
+  min-height: 740px;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: #0b1020;
+}
+
 .game-grid {
   margin-top: 14px;
   display: grid;
