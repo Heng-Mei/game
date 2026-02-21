@@ -14,13 +14,21 @@ function loadInitialThemeMode(): ThemeMode {
 
 type UiState = {
   themeMode: ThemeMode;
+  isSettingsOpen: boolean;
+  isInfoDrawerOpen: boolean;
   setThemeMode: (mode: ThemeMode) => void;
+  setSettingsOpen: (open: boolean) => void;
+  setInfoDrawerOpen: (open: boolean) => void;
 };
 
 export const useUiStore = create<UiState>((set) => ({
   themeMode: loadInitialThemeMode(),
+  isSettingsOpen: false,
+  isInfoDrawerOpen: false,
   setThemeMode: (mode) => {
     writeStorage(THEME_STORAGE_KEY, mode);
     set({ themeMode: mode });
-  }
+  },
+  setSettingsOpen: (open) => set({ isSettingsOpen: open }),
+  setInfoDrawerOpen: (open) => set({ isInfoDrawerOpen: open })
 }));

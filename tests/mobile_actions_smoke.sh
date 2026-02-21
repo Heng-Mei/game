@@ -1,32 +1,32 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-rg -n 'dispatchAction\(' docs/scripts/core/game-manager.js >/dev/null
-rg -n 'setMobileControls\(' docs/scripts/core/ui.js >/dev/null
-rg -n 'setInfoDrawer\(' docs/scripts/core/ui.js >/dev/null
-rg -n 'setFloatingNext\(' docs/scripts/core/ui.js >/dev/null
-rg -n 'setOrientationOverlay\(' docs/scripts/core/ui.js >/dev/null
-rg -n 'mobileControlPolicies' docs/scripts/core/game-manager.js >/dev/null
-rg -n 'infoDrawerOpen' docs/scripts/core/game-manager.js >/dev/null
-rg -n 'loadInfoDrawerState' docs/scripts/core/game-manager.js >/dev/null
-rg -n "dino: 'canvas_only'" docs/scripts/core/game-manager.js >/dev/null
-rg -n "flappy: 'canvas_only'" docs/scripts/core/game-manager.js >/dev/null
-rg -n "game2048: 'canvas_only'" docs/scripts/core/game-manager.js >/dev/null
-rg -n "spider: 'mode_only'" docs/scripts/core/game-manager.js >/dev/null
-rg -n "action: 'mode_chord'" docs/scripts/core/game-manager.js >/dev/null
-rg -n "action: 'difficulty_custom'" docs/scripts/core/game-manager.js >/dev/null
-rg -n "action: 'deal_stock'" docs/scripts/core/game-manager.js >/dev/null
-rg -n 'primary_tap' docs/scripts/games/flappy.js >/dev/null
-rg -n 'primary_tap' docs/scripts/games/dino.js >/dev/null
-rg -n 'primary_tap' docs/scripts/games/snake.js >/dev/null
-rg -n 'primary_tap' docs/scripts/games/tetris.js >/dev/null
-rg -n 'double_tap_restart' docs/scripts/games/minesweeper.js >/dev/null
-rg -n 'onAction\(action\)' docs/scripts/games/tetris.js >/dev/null
-rg -n 'onAction\(action\)' docs/scripts/games/snake.js >/dev/null
-rg -n 'onAction\(action\)' docs/scripts/games/minesweeper.js >/dev/null
-rg -n 'onAction\(action\)' docs/scripts/games/spider.js >/dev/null
-rg -n 'onAction\(action\)' docs/scripts/games/game2048.js >/dev/null
-rg -n 'onAction\(action\)' docs/scripts/games/dino.js >/dev/null
-rg -n 'onAction\(action\)' docs/scripts/games/flappy.js >/dev/null
+required=(
+  "docs/src/ui/button.tsx"
+  "docs/src/ui/card.tsx"
+  "docs/src/ui/modal.tsx"
+  "docs/src/ui/drawer.tsx"
+  "docs/src/ui/segmented-control.tsx"
+  "docs/src/features/menu/menu-page.tsx"
+  "docs/src/features/menu/game-card.tsx"
+  "docs/src/features/settings/settings-modal.tsx"
+  "docs/src/features/game/game-overlay.tsx"
+)
+
+for file in "${required[@]}"; do
+  if [[ ! -f "$file" ]]; then
+    echo "MISSING: $file"
+    exit 1
+  fi
+done
+
+rg -n 'SettingsModal|settings-modal' docs/src/features/settings/settings-modal.tsx >/dev/null
+rg -n 'Drawer|drawer' docs/src/ui/drawer.tsx >/dev/null
+rg -n 'Modal|modal' docs/src/ui/modal.tsx >/dev/null
+rg -n 'SegmentedControl|segmented' docs/src/ui/segmented-control.tsx >/dev/null
+rg -n 'MenuPage' docs/src/features/menu/menu-page.tsx >/dev/null
+rg -n 'GameCard' docs/src/features/menu/game-card.tsx >/dev/null
+rg -n 'settings|drawer|modal|segment' docs/src/theme/theme.css >/dev/null
+rg -n 'menu|game/:gameId' docs/src/app/router.tsx >/dev/null
 
 echo "OK"

@@ -24,3 +24,10 @@
   --color-warn: #ffbe5c;
   --color-danger: #ff7d7d;
 }
+
+.ui-modal,
+.ui-drawer,
+.ui-segmented,
+.settings-modal {
+  color: var(--color-text);
+}

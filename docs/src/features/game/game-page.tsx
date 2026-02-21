@@ -4,6 +4,10 @@ import { GameHost } from '../../game-core/game-host';
 import type { GameOutgoingEvent } from '../../game-core/events';
 import { useGameSessionStore } from '../../stores/game-session-store';
 import { useTheme } from '../../theme/theme-provider';
+import { useUiStore } from '../../stores/ui-store';
+import { Button } from '../../ui/button';
+import { Drawer } from '../../ui/drawer';
+import { GameOverlay } from './game-overlay';
 
 export function GamePage() {
   const { gameId = 'unknown' } = useParams();
@@ -13,6 +17,8 @@ export function GamePage() {
   const setActiveGame = useGameSessionStore((state) => state.setActiveGame);
   const setScore = useGameSessionStore((state) => state.setScore);
   const setStatus = useGameSessionStore((state) => state.setStatus);
+  const infoDrawerOpen = useUiStore((state) => state.isInfoDrawerOpen);
+  const setInfoDrawerOpen = useUiStore((state) => state.setInfoDrawerOpen);
 
   useEffect(() => {
     setActiveGame(gameId);
@@ -37,10 +43,21 @@ export function GamePage() {
         <div className="game-page-actions">
           <span>状态：{status}</span>
           <span>分数：{score}</span>
+          <Button onClick={() => setInfoDrawerOpen(!infoDrawerOpen)}>
+            {infoDrawerOpen ? '收起信息' : '展开信息'}
+          </Button>
           <Link to="/">返回菜单</Link>
         </div>
       </div>
-      <GameHost gameId={gameId} theme={resolvedTheme} onEvent={onEvent} />
+      <div className="game-host-wrap">
+        <GameHost gameId={gameId} theme={resolvedTheme} onEvent={onEvent} />
+        <GameOverlay status={status} />
+      </div>
+      <Drawer open={infoDrawerOpen} title="游戏信息" onClose={() => setInfoDrawerOpen(false)}>
+        <p>当前游戏：{gameId}</p>
+        <p>当前状态：{status}</p>
+        <p>当前分数：{score}</p>
+      </Drawer>
     </section>
   );
 }
