@@ -1,4 +1,3 @@
-import type { Keyboard } from 'phaser';
 import { BaseScene } from '../../game-core/base-scene';
 import type { GameOutgoingEvent } from '../../game-core/events';
 import { createInitialTetrisState, canUseHold } from './tetris-rules';
@@ -36,7 +35,7 @@ export class TetrisScene extends BaseScene {
     this.dispatch({ type: 'GAME_STATE_CHANGED', gameId: 'tetris', state: 'running' });
     this.dispatch({ type: 'SCORE_CHANGED', gameId: 'tetris', score: runtime.score });
 
-    this.input.keyboard?.on('keydown', (event: Keyboard.Key) => {
+    this.input.keyboard?.on('keydown', (event: KeyboardEvent) => {
       const action = resolveTetrisActionFromCode(event.code || '');
       if (!action) {
         return;
