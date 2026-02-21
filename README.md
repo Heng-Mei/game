@@ -34,6 +34,13 @@
 Local: http://localhost:5173
 ```
 
+## Pages 发布方式
+
+- 本项目使用 GitHub Actions 发布（见 `.github/workflows/deploy-pages.yml`）。
+- Actions 会构建 `docs/dist` 并作为 Pages 产物发布。
+- 如果你在仓库设置里仍是 `Deploy from branch`，会直接暴露源码 `docs/index.html`，导致白屏（浏览器无法直接运行 `src/main.tsx`）。
+- 请在仓库 Settings -> Pages 中将 Source 改为 `GitHub Actions`。
+
 ## 验证命令
 
 ```bash

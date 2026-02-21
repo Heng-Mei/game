@@ -6,6 +6,7 @@ required=(
   "docs/package.json"
   "docs/tsconfig.json"
   "docs/vite.config.ts"
+  ".github/workflows/deploy-pages.yml"
   "docs/src/main.tsx"
   "docs/src/app/App.tsx"
   "docs/src/app/router.tsx"
@@ -33,6 +34,7 @@ fi
 
 rg -n 'src="./src/main\.tsx"' docs/index.html >/dev/null
 rg -n "base:\\s*\"\\./\"|base:\\s*'\\./'" docs/vite.config.ts >/dev/null
+rg -n 'upload-pages-artifact|deploy-pages' .github/workflows/deploy-pages.yml >/dev/null
 
 if rg -n 'scripts/core|scripts/games|styles/main\\.css' docs/index.html >/dev/null; then
   echo "FAIL: legacy static runtime references still exist in docs/index.html"
