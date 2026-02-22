@@ -3,6 +3,7 @@ body {
   font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   background: radial-gradient(circle at top, var(--color-surface), var(--color-bg));
   color: var(--color-text);
+  overflow-x: hidden;
 }
 
 .app-shell {
@@ -10,6 +11,11 @@ body {
   margin: 24px auto;
   display: grid;
   gap: 14px;
+  min-width: 0;
+}
+
+.app-shell > * {
+  min-width: 0;
 }
 
 .topbar {
@@ -42,6 +48,7 @@ body {
   background: var(--color-surface);
   border-radius: 14px;
   padding: 20px;
+  min-width: 0;
 }
 
 .panel-card h1 {
@@ -100,6 +107,7 @@ body {
 .game-page {
   display: grid;
   gap: 12px;
+  min-width: 0;
 }
 
 .game-page-head {
@@ -125,6 +133,12 @@ body {
   color: var(--color-muted);
 }
 
+.game-score {
+  min-width: 8ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 .game-page-actions a {
   color: var(--color-primary);
   text-decoration: none;
@@ -134,8 +148,21 @@ body {
   border: 1px solid var(--color-line);
   border-radius: 12px;
   overflow: hidden;
-  background: #000;
-  min-height: 600px;
+  background: var(--color-surface);
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: 960 / 640;
+  position: relative;
+}
+
+.game-canvas-host canvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 .game-grid {
@@ -249,6 +276,7 @@ body {
 
 .game-host-wrap {
   position: relative;
+  min-width: 0;
 }
 
 .game-overlay {

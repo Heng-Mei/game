@@ -39,9 +39,13 @@ export function GameHost({ gameId, theme, onEvent }: GameHostProps) {
       backgroundColor: theme === 'night' ? '#0c111b' : '#eef3ff',
       scene: [scene],
       fps: { target: 60, forceSetTimeOut: true },
+      pixelArt: true,
+      antialias: false,
+      antialiasGL: false,
+      autoRound: true,
       scale: {
         mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
+        autoCenter: Phaser.Scale.NO_CENTER,
         width: 960,
         height: 640
       }

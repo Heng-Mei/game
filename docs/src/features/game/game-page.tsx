@@ -55,7 +55,7 @@ export function GamePage() {
           {item?.id === 'tetris' && (
             <Button onClick={() => setTetrisSettingsOpen(true)}>按键设置</Button>
           )}
-          <span>分数 {score}</span>
+          <span className="game-score">分数 {score}</span>
           <Link to="/">返回菜单</Link>
         </div>
       </div>
