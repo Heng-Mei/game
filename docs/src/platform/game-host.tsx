@@ -33,15 +33,14 @@ export function GameHost({ gameId, theme, onEvent }: GameHostProps) {
       return;
     }
 
-    const instance = new Phaser.Game({
-      type: Phaser.AUTO,
+    const config: Phaser.Types.Core.GameConfig = {
+      type: Phaser.CANVAS,
       parent: containerRef.current,
       backgroundColor: theme === 'night' ? '#0c111b' : '#eef3ff',
       scene: [scene],
       fps: { target: 60, forceSetTimeOut: true },
-      pixelArt: true,
-      antialias: false,
-      antialiasGL: false,
+      pixelArt: false,
+      antialias: true,
       autoRound: true,
       scale: {
         mode: Phaser.Scale.FIT,
@@ -49,7 +48,12 @@ export function GameHost({ gameId, theme, onEvent }: GameHostProps) {
         width: 960,
         height: 640
       }
-    });
+    };
+    // Phaser typings omit this but runtime supports it. Higher backing-store density
+    // improves clarity on HiDPI screens while preserving CSS layout size.
+    (config as unknown as { resolution?: number }).resolution = Math.max(1, window.devicePixelRatio || 1);
+
+    const instance = new Phaser.Game(config);
 
     return () => {
       instance.destroy(true);
