@@ -32,5 +32,5 @@ export function GameHost({ gameId, theme, onEvent }: GameHostProps) {
     return () => bridgeRef.current?.destroy();
   }, [gameId, theme, onEvent]);
 
-  return <div ref={containerRef} className="game-canvas-host" />;
+  return <div ref={containerRef} className="game-canvas-host" data-testid="game-host-canvas" />;
 }

@@ -1,8 +1,6 @@
-export type GameCatalogItem = {
-  id: string;
-  name: string;
-  summary: string;
-};
+import type { GameManifest } from '../contracts/game-contracts';
+
+export type GameCatalogItem = GameManifest;
 
 export const gameCatalog: GameCatalogItem[] = [
   { id: 'tetris', name: '俄罗斯方块 · Tetris', summary: '让方块严丝合缝，完成整行消除。' },
