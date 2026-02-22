@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useGameSessionStore } from '../../stores/game-session-store';
 import { useUiStore } from '../../stores/ui-store';
 import { Button } from '../../ui/button';
@@ -9,10 +9,12 @@ import { useTheme } from '../../theme/theme-provider';
 import { GameHost } from '../../platform/game-host';
 import type { GameOutgoingEvent } from '../../game-core/events';
 import { GameOverlay } from './game-overlay';
+import { TetrisSettingsModal } from '../../games/tetris/tetris-settings-modal';
 
 export function GamePage() {
   const { gameId = 'unknown' } = useParams();
   const { resolvedTheme } = useTheme();
+  const [tetrisSettingsOpen, setTetrisSettingsOpen] = useState(false);
   const setActiveGame = useGameSessionStore((state) => state.setActiveGame);
   const score = useGameSessionStore((state) => state.score);
   const status = useGameSessionStore((state) => state.status);
@@ -50,6 +52,9 @@ export function GamePage() {
           <Button onClick={() => setInfoDrawerOpen(!infoDrawerOpen)}>
             {infoDrawerOpen ? '收起信息' : '展开信息'}
           </Button>
+          {item?.id === 'tetris' && (
+            <Button onClick={() => setTetrisSettingsOpen(true)}>按键设置</Button>
+          )}
           <span>分数 {score}</span>
           <Link to="/">返回菜单</Link>
         </div>
@@ -64,6 +69,7 @@ export function GamePage() {
         <p>{item ? item.summary : '请选择大厅中的游戏开始。'}</p>
         <p>支持桌面端与手机端游玩，可随时返回大厅切换游戏。</p>
       </Drawer>
+      <TetrisSettingsModal open={item?.id === 'tetris' && tetrisSettingsOpen} onClose={() => setTetrisSettingsOpen(false)} />
     </section>
   );
 }

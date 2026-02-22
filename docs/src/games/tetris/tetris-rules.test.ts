@@ -1,27 +1,27 @@
 import { describe, expect, it } from 'vitest';
-import { START_LEVEL, canUseHold, createInitialTetrisState } from './tetris-rules';
+import {
+  START_LEVEL,
+  canUseHold,
+  createInitialTetrisState,
+  reduceTetrisState
+} from './tetris-rules';
 
 describe('tetris-rules', () => {
-  it('starts at level 1 with empty hold', () => {
+  it('starts at level 1 with empty hold and first active piece', () => {
     const state = createInitialTetrisState();
     expect(START_LEVEL).toBe(1);
     expect(state.level).toBe(1);
     expect(state.hold).toBeNull();
+    expect(state.active).toBeTruthy();
   });
 
-  it('allows hold in initial runtime', () => {
+  it('supports hold only once per lock cycle', () => {
     const state = createInitialTetrisState();
-    expect(canUseHold(state)).toBe(true);
-  });
+    const afterFirstHold = reduceTetrisState(state, { type: 'hold' });
+    const afterSecondHold = reduceTetrisState(afterFirstHold, { type: 'hold' });
 
-  it('blocks hold when below level threshold and hold already occupied', () => {
-    expect(
-      canUseHold({
-        score: 0,
-        lines: 0,
-        level: 0,
-        hold: 'T'
-      })
-    ).toBe(false);
+    expect(canUseHold(state)).toBe(true);
+    expect(canUseHold(afterFirstHold)).toBe(false);
+    expect(afterSecondHold).toEqual(afterFirstHold);
   });
 });

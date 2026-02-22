@@ -36,11 +36,15 @@ export function GameHost({ gameId, theme, onEvent }: GameHostProps) {
     const instance = new Phaser.Game({
       type: Phaser.AUTO,
       parent: containerRef.current,
-      width: 900,
-      height: 600,
       backgroundColor: theme === 'night' ? '#0c111b' : '#eef3ff',
       scene: [scene],
-      fps: { target: 60, forceSetTimeOut: true }
+      fps: { target: 60, forceSetTimeOut: true },
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 960,
+        height: 640
+      }
     });
 
     return () => {
