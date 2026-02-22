@@ -133,35 +133,18 @@ body {
   color: var(--color-muted);
 }
 
-.game-score {
-  min-width: 8ch;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
 .game-page-actions a {
   color: var(--color-primary);
   text-decoration: none;
 }
 
-.game-canvas-host {
+.legacy-game-frame {
   border: 1px solid var(--color-line);
   border-radius: 12px;
   overflow: hidden;
   background: var(--color-surface);
   width: 100%;
-  min-width: 0;
-  min-height: 0;
-  aspect-ratio: 960 / 640;
-  position: relative;
-}
-
-.game-canvas-host canvas {
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  image-rendering: auto;
+  height: min(86vh, 920px);
 }
 
 .game-grid {

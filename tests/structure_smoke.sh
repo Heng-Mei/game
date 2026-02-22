@@ -32,7 +32,6 @@ legacy_removed=(
   "docs/scripts/core/ui.js"
   "docs/scripts/core/game-manager.js"
   "docs/scripts/core/loop.js"
-  "docs/public/legacy/index.html"
 )
 
 for file in "${legacy_removed[@]}"; do

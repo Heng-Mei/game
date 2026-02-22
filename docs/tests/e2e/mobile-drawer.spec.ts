@@ -5,7 +5,7 @@ test.use({ viewport: { width: 390, height: 844 } });
 test('game page has single-level navigation and mobile info drawer', async ({ page }) => {
   await page.goto('/#/game/tetris');
 
-  await expect(page.locator('iframe')).toHaveCount(0);
+  await expect(page.locator('iframe.legacy-game-frame')).toBeVisible();
   await expect(page.getByRole('link', { name: '返回菜单' })).toHaveCount(1);
 
   const toggle = page.getByRole('button', { name: '展开信息' });
