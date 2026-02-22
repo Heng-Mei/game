@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { GAME_TARGET, SIZE, createEmptyGrid, mergeLine, spawnValue } from './g2048-rules';
+import {
+  GAME_TARGET,
+  SIZE,
+  createEmptyGrid,
+  fromRows,
+  mergeLine,
+  moveGrid,
+  spawnValue
+} from './g2048-rules';
 
 describe('g2048-rules', () => {
   it('uses 4x4 grid', () => {
@@ -21,5 +29,17 @@ describe('g2048-rules', () => {
 
   it('keeps classic target tile', () => {
     expect(GAME_TARGET).toBe(2048);
+  });
+
+  it('merges once per move and increments score correctly', () => {
+    const start = fromRows([
+      [2, 2, 2, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0]
+    ]);
+    const next = moveGrid(start, 'left', () => 0);
+    expect(next.grid[0].slice(0, 2)).toEqual([4, 2]);
+    expect(next.score).toBe(4);
   });
 });
