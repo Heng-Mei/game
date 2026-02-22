@@ -44,7 +44,7 @@ export function GamePage() {
 
   return (
     <section className="panel-card game-page">
-      <div className="game-page-head">
+      <div className="game-page-head" data-testid="game-hud">
         <h1>{title}</h1>
         <div className="game-page-actions">
           <Button onClick={() => setInfoDrawerOpen(!infoDrawerOpen)}>

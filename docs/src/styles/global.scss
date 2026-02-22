@@ -107,6 +107,10 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 10px 12px;
 }
 
 .game-page-head h1 {
