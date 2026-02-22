@@ -88,7 +88,7 @@ export class DinoScene extends BaseScene {
       this.graphics.fillRect(obs.x, DINO_VIEW.floorY - obs.height, obs.width, obs.height);
     });
 
-    const status = this.state.gameOver ? '结束，点击重开' : '点击跳跃';
+    const status = this.state.gameOver ? '结束，点击重开 (tap / click)' : '点击跳跃 (tap / click)';
     this.infoText.setText(`Dino 分数 ${this.state.score} | ${status}`);
   }
 }

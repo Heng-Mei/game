@@ -90,7 +90,7 @@ export class FlappyScene extends BaseScene {
     this.graphics.fillStyle(0x2a2a2a, 1);
     this.graphics.fillCircle(FLAPPY_VIEW.birdX + 5, this.state.birdY - 4, 2);
 
-    const status = this.state.gameOver ? '结束，点击重开' : '点击屏幕起飞';
+    const status = this.state.gameOver ? '结束，点击重开 (tap / click)' : '点击屏幕起飞 (tap / click)';
     this.infoText.setText(`Flappy 分数 ${this.state.score} | ${status}`);
   }
 }

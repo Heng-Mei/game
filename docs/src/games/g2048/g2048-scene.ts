@@ -73,6 +73,7 @@ export class G2048Scene extends BaseScene {
       }
     });
 
+    // Mobile swipe / touch input.
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       this.pointerStart = { x: pointer.x, y: pointer.y };
     });
@@ -194,7 +195,7 @@ export class G2048Scene extends BaseScene {
       ? `结束，按 R 重开`
       : this.state.won
       ? `达成 ${GAME_TARGET}，继续挑战`
-      : '方向键或滑动操作';
+      : '方向键或滑动操作（swipe touch）';
     this.infoText.setText(`2048 分数 ${this.state.score} | ${status}`);
   }
 
