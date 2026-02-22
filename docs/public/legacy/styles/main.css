@@ -1,5 +1,34 @@
-:root {
+:root,
+:root[data-theme='day'] {
+  --bg: #f2f6ff;
+  --bg-radial: #dce8ff;
+  --panel: #ffffff;
+  --panel-alt: #edf3ff;
+  --card: #ffffff;
+  --text: #101727;
+  --muted: #5a6781;
+  --accent: #2563eb;
+  --border: #c7d3e8;
+  --menu-header-bg: linear-gradient(140deg, #edf3ff 0%, #dce8ff 65%);
+  --menu-btn-hover: #e6efff;
+  --button-hover: #dce8ff;
+  --toggle-off-bg: #f3f7ff;
+  --canvas-bg: #f7faff;
+  --mobile-btn-bg: #e8f0ff;
+  --mobile-btn-active: #d8e5ff;
+  --mobile-warn-color: #a72b2b;
+  --mobile-warn-border: #cc8a8a;
+  --mobile-accent-color: #1752ce;
+  --mobile-accent-border: #6d8dd1;
+  --overlay-bg: rgba(18, 24, 40, 0.42);
+  --orientation-card-bg: #ffffff;
+  --drawer-bg: rgba(249, 252, 255, 0.98);
+  --floating-next-bg: rgba(237, 243, 255, 0.95);
+}
+
+:root[data-theme='night'] {
   --bg: #121621;
+  --bg-radial: #26324a;
   --panel: #20273a;
   --panel-alt: #1a2030;
   --card: #2b334a;
@@ -7,6 +36,21 @@
   --muted: #b7c2de;
   --accent: #8bd3ff;
   --border: #3e4a67;
+  --menu-header-bg: linear-gradient(140deg, #2f3d62 0%, #1e2434 65%);
+  --menu-btn-hover: #273149;
+  --button-hover: #2a3248;
+  --toggle-off-bg: #171e2d;
+  --canvas-bg: #0f1320;
+  --mobile-btn-bg: #172033;
+  --mobile-btn-active: #2b3a5a;
+  --mobile-warn-color: #fecaca;
+  --mobile-warn-border: #8b3b49;
+  --mobile-accent-color: #d9f2ff;
+  --mobile-accent-border: #5170a8;
+  --overlay-bg: rgba(8, 11, 18, 0.78);
+  --orientation-card-bg: #1a2132;
+  --drawer-bg: rgba(15, 19, 32, 0.96);
+  --floating-next-bg: rgba(26, 32, 48, 0.92);
 }
 
 * {
@@ -18,7 +62,7 @@ body {
   min-height: 100vh;
   font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
   color: var(--text);
-  background: radial-gradient(circle at top, #26324a 0%, var(--bg) 60%);
+  background: radial-gradient(circle at top, var(--bg-radial) 0%, var(--bg) 60%);
   display: grid;
   place-items: center;
   padding: 18px;
@@ -38,6 +82,18 @@ html.embedded-mode .app-shell {
 html.embedded-mode #menuView,
 html.embedded-mode #backToMenu {
   display: none !important;
+}
+
+html.embedded-mode #gameTitle {
+  display: none !important;
+}
+
+html.embedded-mode .topbar {
+  justify-content: flex-end;
+}
+
+html.embedded-mode .game-view:not(.mobile-game-active) .topbar {
+  display: none;
 }
 
 button {
@@ -60,7 +116,7 @@ button {
 .menu-header {
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: linear-gradient(140deg, #2f3d62 0%, #1e2434 65%);
+  background: var(--menu-header-bg);
   padding: 18px;
 }
 
@@ -105,7 +161,7 @@ button {
 
 .menu-btn:hover {
   transform: translateY(-2px);
-  background: #273149;
+  background: var(--menu-btn-hover);
 }
 
 .topbar {
@@ -132,7 +188,7 @@ button {
 
 .back-btn:hover,
 .toggle-btn:hover {
-  background: #2a3248;
+  background: var(--button-hover);
 }
 
 .toggle-btn {
@@ -142,7 +198,7 @@ button {
 
 .toggle-btn[aria-pressed='false'] {
   color: var(--muted);
-  background: #171e2d;
+  background: var(--toggle-off-bg);
 }
 
 .toggle-btn[data-kind='action'][aria-pressed='false'] {
@@ -186,7 +242,7 @@ button {
   height: auto;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #0f1320;
+  background: var(--canvas-bg);
 }
 
 #mainCanvas {
@@ -252,7 +308,7 @@ button {
   width: 120px;
   z-index: 6;
   backdrop-filter: blur(4px);
-  background: rgba(26, 32, 48, 0.92);
+  background: var(--floating-next-bg);
 }
 
 .floating-next h3 {
@@ -284,7 +340,7 @@ button {
 .mobile-btn {
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #172033;
+  background: var(--mobile-btn-bg);
   color: var(--text);
   min-height: 52px;
   font-size: 16px;
@@ -314,17 +370,17 @@ button {
 }
 
 .mobile-btn:active {
-  background: #2b3a5a;
+  background: var(--mobile-btn-active);
 }
 
 .mobile-btn--warn {
-  color: #fecaca;
-  border-color: #8b3b49;
+  color: var(--mobile-warn-color);
+  border-color: var(--mobile-warn-border);
 }
 
 .mobile-btn--accent {
-  color: #d9f2ff;
-  border-color: #5170a8;
+  color: var(--mobile-accent-color);
+  border-color: var(--mobile-accent-border);
 }
 
 .mobile-layout--portrait {
@@ -358,7 +414,7 @@ button {
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(8, 11, 18, 0.78);
+  background: var(--overlay-bg);
   padding: 18px;
   z-index: 8;
 }
@@ -367,7 +423,7 @@ button {
   width: min(420px, 100%);
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #1a2132;
+  background: var(--orientation-card-bg);
   padding: 16px;
   display: grid;
   gap: 10px;
@@ -422,7 +478,7 @@ button {
     right: 0;
     bottom: 0;
     max-height: 42dvh;
-    background: rgba(15, 19, 32, 0.96);
+    background: var(--drawer-bg);
     border-top: 1px solid var(--border);
     z-index: 15;
     overflow: hidden;

@@ -49,10 +49,48 @@
   const params = new URLSearchParams(window.location.search);
   const gameFromQuery = params.get('game');
   const embeddedMode = params.get('embedded') === '1' || params.get('embed') === '1';
+  const themeFromQuery = params.get('theme');
+  const THEME_MODE_STORAGE_KEY = 'gamehub.theme.mode';
+
+  const applyTheme = (theme) => {
+    const normalized = theme === 'night' ? 'night' : 'day';
+    document.documentElement.setAttribute('data-theme', normalized);
+  };
+
+  const resolveInitialTheme = () => {
+    if (themeFromQuery === 'day' || themeFromQuery === 'night') {
+      return themeFromQuery;
+    }
+
+    try {
+      const storedMode = window.localStorage.getItem(THEME_MODE_STORAGE_KEY);
+      if (storedMode === 'day' || storedMode === 'night') {
+        return storedMode;
+      }
+    } catch (error) {
+      // Ignore storage failures and fallback to system.
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+  };
+
+  applyTheme(resolveInitialTheme());
+
+  window.addEventListener('message', (event) => {
+    if (event.origin !== window.location.origin) {
+      return;
+    }
+    const payload = event.data;
+    if (!payload || payload.type !== 'GAMEHUB_THEME') {
+      return;
+    }
+    applyTheme(payload.theme);
+  });
 
   if (embeddedMode) {
     document.documentElement.classList.add('embedded-mode');
     refs.backToMenuBtn.classList.add('hidden');
+    refs.gameTitle.classList.add('hidden');
     manager.openMenu = () => {};
   }
 

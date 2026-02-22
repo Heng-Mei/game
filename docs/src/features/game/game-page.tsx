@@ -1,10 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useGameSessionStore } from '../../stores/game-session-store';
 import { useUiStore } from '../../stores/ui-store';
 import { Button } from '../../ui/button';
 import { Drawer } from '../../ui/drawer';
 import { gameCatalog } from '../../shared/game-catalog';
+import { useTheme } from '../../theme/theme-provider';
 
 const legacyGameMap: Record<string, string> = {
   tetris: 'tetris',
@@ -18,17 +19,31 @@ const legacyGameMap: Record<string, string> = {
 
 export function GamePage() {
   const { gameId = 'unknown' } = useParams();
+  const { resolvedTheme } = useTheme();
   const setActiveGame = useGameSessionStore((state) => state.setActiveGame);
   const infoDrawerOpen = useUiStore((state) => state.isInfoDrawerOpen);
   const setInfoDrawerOpen = useUiStore((state) => state.setInfoDrawerOpen);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const item = gameCatalog.find((game) => game.id === gameId);
   const title = item ? item.name : gameId;
   const legacyGame = legacyGameMap[gameId];
+
+  const syncLegacyTheme = useCallback(() => {
+    const frameWindow = iframeRef.current?.contentWindow;
+    if (!frameWindow) {
+      return;
+    }
+    frameWindow.postMessage({ type: 'GAMEHUB_THEME', theme: resolvedTheme }, window.location.origin);
+  }, [resolvedTheme]);
 
   useEffect(() => {
     setActiveGame(gameId);
     setInfoDrawerOpen(false);
   }, [gameId, setActiveGame, setInfoDrawerOpen]);
+
+  useEffect(() => {
+    syncLegacyTheme();
+  }, [syncLegacyTheme]);
 
   return (
     <section className="panel-card game-page">
@@ -43,9 +58,11 @@ export function GamePage() {
       </div>
       {legacyGame ? (
         <iframe
+          ref={iframeRef}
           title={title}
           className="legacy-game-frame"
           src={`./legacy/index.html?game=${legacyGame}&embedded=1`}
+          onLoad={syncLegacyTheme}
         />
       ) : (
         <p>未找到该游戏。</p>
