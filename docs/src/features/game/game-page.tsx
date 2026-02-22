@@ -6,7 +6,7 @@ import { Button } from '../../ui/button';
 import { Drawer } from '../../ui/drawer';
 import { gameCatalog } from '../../shared/game-catalog';
 import { useTheme } from '../../theme/theme-provider';
-import { GameHost } from '../../game-core/game-host';
+import { GameHost } from '../../platform/game-host';
 import type { GameOutgoingEvent } from '../../game-core/events';
 import { GameOverlay } from './game-overlay';
 
